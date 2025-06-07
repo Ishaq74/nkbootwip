@@ -1,0 +1,130 @@
+---
+import { getCollection } from "astro:content";
+import Section from "@atoms/Section.astro";
+import Wrapper from "@atoms/Wrapper2.astro";
+import Text from "@atoms/Text.astro";
+import Icon from "node_modules/astro-icon/components/Icon.astro";
+import NavItem from "@components/navigations/NavItem.astro";
+import Input from "@atoms/Input.astro";
+import Button from "@atoms/Button.astro";
+import Link from "@atoms/Link.astro";
+
+const org = (await getCollection("organizations")).find(entry => entry.slug === "nkboot");
+if (!org) throw new Error("Organisation nkboot non trouvée");
+
+const data = org.data;
+const navLinks = data.navLinks || [];
+const logo = data.logo || "";
+const logoAlt = data.logoAlt || data.name;
+const slogan = data.slogan || "";
+---
+
+<Section
+  as="header"
+  backgroundColor="white"
+  textColor="dark"
+  borderBottom
+>
+  <Wrapper
+    class="header-grid"
+    style="display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 2rem;"
+  >
+    <!-- BRAND -->
+    <div class="brand" style="display: flex; align-items: center; gap: 0.75rem;">
+      {logo && (
+        <Link href="/" aria-label="Accueil">
+          <img src={logo} alt={logoAlt} width="42" height="42" style="border-radius: 50%; object-fit: cover;" />
+        </Link>
+      )}
+      <Text tag="span" fontSize="1.25rem" fontWeight="bold">{data.name}</Text>
+    </div>
+
+    <!-- NAVIGATION -->
+    <nav class="main-nav" style="justify-self: center;">
+      <ul class="nav-list">
+        {navLinks.map(link => (
+          <NavItem {...link} mode="desktop" />
+        ))}
+      </ul>
+    </nav>
+
+    <!-- ACTIONS -->
+    <div class="header-actions" style="display: flex; align-items: center; gap: 1rem; justify-self: end;">
+      <form>
+        <Input type="search" placeholder="Search..." />
+      </form>
+
+      <div class="social-icons">
+        <a href="#"><Icon name="mdi:facebook" size={20} /></a>
+        <a href="#"><Icon name="mdi:twitter" size={20} /></a>
+        <a href="#"><Icon name="mdi:linkedin" size={20} /></a>
+      </div>
+
+      <div class="auth-buttons" style="display: flex; gap: 0.5rem;">
+        <Button variant="outline">Login</Button>
+        <Button variant="primary">Sign Up</Button>
+      </div>
+
+      <button
+        class="nav-toggle"
+        aria-label="Menu"
+        onclick="document.querySelector('.mobile-nav').classList.toggle('open')"
+        style="background: none; border: none; cursor: pointer;"
+      >
+        <Icon name="mdi:menu" size={26} />
+      </button>
+    </div>
+  </Wrapper>
+
+  <!-- MOBILE NAV -->
+  <Wrapper class="mobile-nav" style="display: none; flex-direction: column; padding: 1rem 0;">
+    <ul style="list-style: none; padding: 0; margin: 0;">
+      {navLinks.map(link => (
+        <NavItem {...link} mode="mobile" />
+      ))}
+    </ul>
+  </Wrapper>
+</Section>
+
+<style>
+  .nav-list {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    align-items: center;
+  }
+
+  .social-icons {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .nav-toggle {
+    display: none;
+  }
+
+  @media (max-width: 1023px) {
+    .main-nav,
+    .auth-buttons,
+    .social-icons,
+    form {
+      display: none !important;
+    }
+
+    .nav-toggle {
+      display: inline-flex !important;
+    }
+
+    .mobile-nav.open {
+      display: flex !important;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .mobile-nav {
+      display: none !important;
+    }
+  }
+</style>

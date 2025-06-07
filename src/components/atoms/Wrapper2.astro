@@ -1,0 +1,148 @@
+---
+interface Props {
+  tag?: 'div' | 'section' | 'article' | 'aside' | 'main';
+  display?: 'block' | 'flex' | 'grid';
+  cols?: 1 | 2 | 3 | 4 | 5 | 6;
+  autoFit?: boolean;
+  gridTemplateColumns?: string;
+  gap?: string;
+  rowGap?: string;
+  columnGap?: string;
+  flexDirection?: 'row' | 'row-reverse' | 'column' | 'column-reverse';
+  flexWrap?: 'nowrap' | 'wrap' | 'wrap-reverse';
+  alignItems?: 'flex-start' | 'center' | 'flex-end' | 'baseline' | 'stretch';
+  justifyContent?: 'flex-start' | 'center' | 'flex-end' | 'space-between' | 'space-around' | 'space-evenly';
+  alignContent?: 'flex-start' | 'center' | 'flex-end' | 'space-between' | 'space-around' | 'stretch';
+  padding?: string;
+  paddingBlock?: string;
+  paddingInline?: string;
+  paddingTop?: string;
+  paddingBottom?: string;
+  paddingLeft?: string;
+  paddingRight?: string;
+  margin?: string;
+  marginBlock?: string;
+  marginInline?: string;
+  marginTop?: string;
+  marginBottom?: string;
+  marginLeft?: string;
+  marginRight?: string;
+  border?: boolean;
+  borderColor?: string;
+  borderWidth?: string;
+  borderStyle?: string;
+  textColor?: string;
+  backgroundColor?: string;
+  width?: string;
+  height?: string;
+  className?: string;
+  style?: string;
+  [key: string]: any;
+}
+
+const {
+  tag = 'div',
+  display = 'block',
+  cols,
+  autoFit = false,
+  gridTemplateColumns,
+  gap = '1rem',
+  rowGap,
+  columnGap,
+  flexDirection,
+  flexWrap,
+  alignItems = 'stretch',
+  justifyContent = 'flex-start',
+  alignContent = 'stretch',
+  padding,
+  paddingBlock,
+  paddingInline,
+  paddingTop,
+  paddingBottom,
+  paddingLeft,
+  paddingRight,
+  margin,
+  marginBlock,
+  marginInline,
+  marginTop,
+  marginBottom,
+  marginLeft,
+  marginRight,
+  border = false,
+  borderColor = 'border',
+  borderWidth = '1px',
+  borderStyle = 'solid',
+  textColor = 'text',
+  backgroundColor,
+  width,
+  height,
+  className = '',
+  style: inlineStyle = '',
+  ...restProps
+} = Astro.props as Props;
+
+// On retire `cols` de restProps pour ne pas l'injecter dans le DOM
+delete restProps.cols;
+
+const designTokens = [
+  'primary', 'secondary', 'accent', 'background', 'text', 'border', 'hover', 'focus',
+  'warning', 'info', 'disabled', 'muted', 'surface', 'shadow', 'shadow-dark',
+  'error', 'success',
+  'primary-light', 'secondary-light', 'accent-light',
+  'primary-dark', 'secondary-dark', 'accent-dark', 'background-dark', 'text-dark',
+  'border-dark', 'hover-dark', 'surface-dark', 'muted-dark'
+];
+
+function token(val: string | undefined) {
+  return val && designTokens.includes(val) ? `var(--color-${val})` : val;
+}
+
+const cssTextColor = token(textColor);
+const cssBackgroundColor = token(backgroundColor);
+const cssBorderColor = token(borderColor);
+
+const classes = [
+  'wrapper',
+  display,
+  cols ? `cols-${cols}` : '',
+  autoFit ? 'auto-fit' : '',
+  className
+].filter(Boolean).join(' ');
+
+const style = [
+  cssTextColor ? `color: ${cssTextColor};` : '',
+  cssBackgroundColor ? `background-color: ${cssBackgroundColor};` : '',
+  border ? `border: ${borderWidth} ${borderStyle} ${cssBorderColor};` : '',
+  gap ? `gap: ${gap};` : '',
+  rowGap ? `row-gap: ${rowGap};` : '',
+  columnGap ? `column-gap: ${columnGap};` : '',
+  flexDirection ? `flex-direction: ${flexDirection};` : '',
+  flexWrap ? `flex-wrap: ${flexWrap};` : '',
+  alignItems ? `align-items: ${alignItems};` : '',
+  justifyContent ? `justify-content: ${justifyContent};` : '',
+  alignContent ? `align-content: ${alignContent};` : '',
+  padding ? `padding: ${padding};` : '',
+  paddingBlock ? `padding-block: ${paddingBlock};` : '',
+  paddingInline ? `padding-inline: ${paddingInline};` : '',
+  paddingTop ? `padding-top: ${paddingTop};` : '',
+  paddingBottom ? `padding-bottom: ${paddingBottom};` : '',
+  paddingLeft ? `padding-left: ${paddingLeft};` : '',
+  paddingRight ? `padding-right: ${paddingRight};` : '',
+  margin ? `margin: ${margin};` : '',
+  marginBlock ? `margin-block: ${marginBlock};` : '',
+  marginInline ? `margin-inline: ${marginInline};` : '',
+  marginTop ? `margin-top: ${marginTop};` : '',
+  marginBottom ? `margin-bottom: ${marginBottom};` : '',
+  marginLeft ? `margin-left: ${marginLeft};` : '',
+  marginRight ? `margin-right: ${marginRight};` : '',
+  width ? `width: ${width};` : '',
+  height ? `height: ${height};` : '',
+  inlineStyle
+].filter(Boolean).join(' ');
+
+const Tag = tag;
+---
+
+<Tag class={classes} style={style} {...restProps}>
+  <slot />
+</Tag>

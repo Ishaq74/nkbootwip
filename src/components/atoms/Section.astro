@@ -1,0 +1,130 @@
+---
+// src/components/Section.astro
+
+interface Props {
+  tag?: 'section' | 'div' | 'article' | 'aside' | 'nav' | 'header' | 'footer';
+  alignItems?: 'flex-start' | 'center' | 'flex-end' | 'baseline' | 'stretch';
+  justifyContent?: 'flex-start' | 'center' | 'flex-end' | 'space-between' | 'space-around' | 'space-evenly';
+  alignContent?: 'flex-start' | 'center' | 'flex-end' | 'space-between' | 'space-around' | 'space-evenly';
+  padding?: string;
+  paddingBlock?: string;
+  paddingInline?: string;
+  paddingTop?: string;
+  paddingBottom?: string;
+  paddingLeft?: string;
+  paddingRight?: string;
+  margin?: string;
+  marginBlock?: string;
+  marginInline?: string;
+  marginTop?: string;
+  marginBottom?: string;
+  marginLeft?: string;
+  marginRight?: string;
+  border?: boolean;
+  borderColor?: string;
+  borderWidth?: string;
+  borderStyle?: 'solid' | 'dashed' | 'dotted' | 'double' | 'groove' | 'ridge' | 'inset' | 'outset';
+  textColor?: string;
+  backgroundColor?: string;
+  textAlign?: 'left' | 'center' | 'right' | 'justify';
+  width?: string;
+  className?: string;
+  [key: string]: any;
+}
+
+const {
+  tag = 'section',
+  alignItems = 'stretch',
+  justifyContent = 'flex-start',
+  alignContent = 'stretch',
+  padding = "1rem",
+  paddingBlock,
+  paddingInline,
+  paddingTop,
+  paddingBottom,
+  paddingLeft,
+  paddingRight,
+  margin,
+  marginBlock,
+  marginInline,
+  marginTop,
+  marginBottom,
+  marginLeft,
+  marginRight,
+  border = true,
+  borderColor = 'purple',
+  borderWidth = '4px',
+  borderStyle = 'dashed',
+  textColor = 'black',
+  backgroundColor,
+  textAlign = 'center',
+  width,
+  className = '',
+  ...htmlAttributes
+} = Astro.props as Props;
+
+const validTags = ['section', 'div', 'article', 'aside', 'nav', 'header', 'footer'];
+const SectionTag = validTags.includes(tag) ? tag : 'section';
+
+// Liste complète des tokens design (adaptée à votre liste)
+const designTokens = [
+  'primary', 'secondary', 'accent', 'background', 'text', 'border', 'hover', 'focus',
+  'warning', 'info', 'disabled', 'muted', 'surface', 'shadow', 'shadow-dark',
+  'error', 'success',
+  'primary-light', 'secondary-light', 'accent-light',
+  'primary-dark', 'secondary-dark', 'accent-dark', 'background-dark', 'text-dark',
+  'border-dark', 'hover-dark', 'surface-dark', 'muted-dark'
+];
+
+// Fonction pour détecter si c’est un token design
+function isDesignToken(color: string) {
+  return designTokens.includes(color);
+}
+
+// Gestion couleur textColor (idem, peut être token ou couleur directe)
+const cssTextColor = isDesignToken(textColor) ? `var(--color-${textColor})` : textColor;
+
+// Gestion backgroundColor, appliquer variable CSS si token sinon couleur directe
+const cssBackgroundColor = backgroundColor
+  ? (isDesignToken(backgroundColor) ? `var(--color-${backgroundColor})` : backgroundColor)
+  : undefined;
+
+// Construction classes d'alignement
+const classes = [
+  'section',
+  `align-items-${alignItems.replace(' ', '-')}`,
+  `justify-content-${justifyContent.replace(' ', '-')}`,
+  `align-content-${alignContent.replace(' ', '-')}`,
+  `text-align-${textAlign}`,
+  border ? 'border' : '',
+  border ? `border-${borderStyle}` : '',
+  className,
+].filter(Boolean).join(' ');
+
+// Style inline pour padding/margin + couleurs + borderColor + borderWidth + width
+const style = [
+  padding ? `padding: ${padding};` : '',
+  paddingBlock ? `padding-block: ${paddingBlock};` : '',
+  paddingInline ? `padding-inline: ${paddingInline};` : '',
+  paddingTop ? `padding-top: ${paddingTop};` : '',
+  paddingBottom ? `padding-bottom: ${paddingBottom};` : '',
+  paddingLeft ? `padding-left: ${paddingLeft};` : '',
+  paddingRight ? `padding-right: ${paddingRight};` : '',
+  margin ? `margin: ${margin};` : '',
+  marginBlock ? `margin-block: ${marginBlock};` : '',
+  marginInline ? `margin-inline: ${marginInline};` : '',
+  marginTop ? `margin-top: ${marginTop};` : '',
+  marginBottom ? `margin-bottom: ${marginBottom};` : '',
+  marginLeft ? `margin-left: ${marginLeft};` : '',
+  marginRight ? `margin-right: ${marginRight};` : '',
+  cssBackgroundColor ? `background-color: ${cssBackgroundColor};` : '',
+  border ? `border: ${borderStyle} ${borderWidth} ${borderColor};` : '',
+  width ? `width: ${width};` : '',
+  `color: ${cssTextColor};`,
+].filter(Boolean).join(' ');
+
+---
+
+<SectionTag class={classes} style={style} {...htmlAttributes}>
+  <slot />
+</SectionTag>

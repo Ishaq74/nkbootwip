@@ -1,0 +1,81 @@
+---
+import Layout from "@layouts/BaseLayout.astro";
+import Section from "@atoms/Section.astro";
+import Wrapper2 from "@atoms/Wrapper2.astro";
+import Text from "@atoms/Text.astro";
+import QueryLoop from "@organisms/QueryLoop.astro";
+
+---
+<Layout title="Posts" description="Test d'affichage des posts et du query loop" >
+<Section>
+  <Wrapper2>
+    <Text tag="h1" fontSize="2rem" fontWeight="bold">Démo : usages de QueryLoop</Text>
+    <Text tag="p" fontSize="1rem" color="gray">
+      Voici une démonstration des différentes variantes de QueryLoop appliquées à la collection <strong>posts</strong> et <strong>postcategories</strong>.
+    </Text>
+  </Wrapper2>
+</Section>
+
+<!-- 1. Tous les postcategories -->
+<Section>
+  <Wrapper2>
+    <Text tag="h2" fontSize="1.5rem" fontWeight="semibold">1. Toutes les catégories de posts</Text>
+    <QueryLoop collection="postcategories" />
+  </Wrapper2>
+</Section>
+
+<!-- 2. Tous les posts -->
+<Section>
+  <Wrapper2>
+    <Text tag="h2" fontSize="1.5rem" fontWeight="semibold">2. Tous les posts</Text>
+    <QueryLoop collection="posts" />
+  </Wrapper2>
+</Section>
+
+<!-- 3. Posts dans la catégorie "astro" -->
+<Section>
+  <Wrapper2>
+    <Text tag="h2" fontSize="1.5rem" fontWeight="semibold">3. Posts dans la catégorie “astro”</Text>
+    <QueryLoop collection="posts" categoryFilter="astro" />
+  </Wrapper2>
+</Section>
+
+<!-- 4. Posts limités à 2 -->
+<Section>
+  <Wrapper2>
+    <Text tag="h2" fontSize="1.5rem" fontWeight="semibold">4. Limite de 2 posts</Text>
+    <QueryLoop collection="posts" limit={2} />
+  </Wrapper2>
+</Section>
+
+<!-- 5. Tri par date descendante -->
+<Section>
+  <Wrapper2>
+    <Text tag="h2" fontSize="1.5rem" fontWeight="semibold">5. Tri par date de publication</Text>
+    <QueryLoop collection="posts" sort={{ field: "pubDate", order: "desc" }} />
+  </Wrapper2>
+</Section>
+
+<!-- 6. Contenu lié à un post (simulé avec un ID connu) -->
+<Section>
+  <Wrapper2>
+    <Text tag="h2" fontSize="1.5rem" fontWeight="semibold">6. Contenus liés à “creer-site-astro”</Text>
+  </Wrapper2>
+</Section>
+
+<!-- 7. Contenus “siblings” (même catégorie que creer-site-astro, sauf lui-même) -->
+<Section>
+  <Wrapper2>
+    <Text tag="h2" fontSize="1.5rem" fontWeight="semibold">7. Posts “siblings” (même catégorie que “creer-site-astro”)</Text>
+    <QueryLoop collection="posts" siblingsContent />
+  </Wrapper2>
+</Section>
+
+<!-- 8. Résolution de références : auteur + catégorie -->
+<Section>
+  <Wrapper2>
+    <Text tag="h2" fontSize="1.5rem" fontWeight="semibold">8. Résolution des références : author + category</Text>
+    <QueryLoop collection="posts" references={["author", "category"]} />
+  </Wrapper2>
+</Section>
+</Layout>

@@ -1,0 +1,87 @@
+---
+import Layout from "@layouts/BaseLayout.astro";
+import { getCollection } from "astro:content";
+import Section from "@atoms/Section.astro";
+import Text from "@atoms/Text.astro";
+import List from "@atoms/List.astro";
+import Wrapper from "@atoms/Wrapper2.astro";
+
+const org = (await getCollection('organizations')).find(entry => entry.slug === 'nkboot');
+if (!org) throw new Error('Organization "nkboot" not found');
+const data = org.data;
+---
+<Layout title="Exemple Site Identity" description="Exemple de page d'identité du site NkBoot">
+  <Section id="hero" textAlign="center" backgroundColor="primary" padding="4rem">
+    <Text tag="h1" textColor="text-light" fontSize="2.5em" marginBottom="1rem">
+      Identité du site
+    </Text>
+    <Text tag="p" textColor="text-light" fontSize="1.2em">
+      Découvrez les informations clés de notre site.
+    </Text>
+  </Section>
+
+<Section id="identity-doc" textAlign="left" backgroundColor="surface" padding="2rem">
+  <Text tag="h2" iconLeft="mdi:account-badge-outline" backgroundColor="yellow" textColor="text-dark" border>
+    Identité du site : {data.name}
+  </Text>
+  <Text tag="p">{data.description}</Text>
+
+  <Wrapper display="grid" cols={2} gap="2rem" padding="2rem 0">
+    <!-- Colonne 1 -->
+    <Section>
+      <Text tag="h3" iconLeft="mdi:domain">Coordonnées</Text>
+      <List
+        items={[
+          `Email : ${data.email}`,
+          `Téléphone : ${data.telephone}`,
+          data.address ? `Adresse : ${data.address.streetAddress}, ${data.address.postalCode} ${data.address.addressLocality}` : '',
+        ].filter(Boolean)}
+      />
+
+      <Text tag="h3" iconLeft="mdi:badge-account">Infos légales</Text>
+      <List
+        items={[
+          `Nom légal : ${data.legalName}`,
+          `SIRET : ${data.siret}`,
+          `TVA : ${data.vatID}`,
+          `Code NAF : ${data.nafCode}`,
+        ].filter(Boolean)}
+      />
+
+      <Text tag="h3" iconLeft="mdi:map-marker">Géolocalisation</Text>
+      {data.geo && (
+        <Text tag="p">{data.geo.latitude}, {data.geo.longitude}</Text>
+      )}
+    </Section>
+
+    <!-- Colonne 2 -->
+    <Section>
+      <Text tag="h3" iconLeft="mdi:web">Site</Text>
+      <List
+        items={[
+          `Langue par défaut : ${data.defaultLang}`,
+          `URL : ${data.siteUrl}`,
+          `Canonique : ${data.defaultCanonicalUrl}`,
+          `Slogan : ${data.slogan}`,
+        ].filter(Boolean)}
+      />
+
+      <Text tag="h3" iconLeft="mdi:share-variant">Réseaux sociaux</Text>
+      <List
+        items={data.socialMedia?.map(s => `${s.name} → ${s.url}`) ?? []}
+      />
+
+      <Text tag="h3" iconLeft="mdi:menu">Navigation principale</Text>
+      <List
+        items={data.navLinks?.map(link => `${link.name} → ${link.url}`) ?? []}
+      />
+    </Section>
+  </Wrapper>
+
+  {data.footerText && (
+    <Text tag="p" textColor="muted" fontSize="0.9em" margin="2rem 0 0 0">
+      {data.footerText}
+    </Text>
+  )}
+</Section>
+</Layout>

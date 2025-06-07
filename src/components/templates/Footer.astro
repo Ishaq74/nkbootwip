@@ -1,0 +1,98 @@
+---
+import { getCollection } from "astro:content";
+import Section from "@atoms/Section.astro";
+import Wrapper from "@atoms/Wrapper2.astro";
+import Text from "@atoms/Text.astro";
+import List from "@atoms/List.astro";
+
+const org = (await getCollection("organizations")).find(entry => entry.slug === "nkboot");
+if (!org) throw new Error("Organisation nkboot non trouvée");
+const data = org.data;
+
+const config = {
+  showSocial: true,
+  showNavPrimary: true,
+  showNavSecondary: true,
+  showContactInfo: true,
+  showLegalInfo: true,
+  showAddress: true,
+  showGeo: false,
+  showCopyright: true,
+};
+---
+
+<Section as="footer" backgroundColor="accent">
+  <Wrapper display="grid" cols={5}>
+
+    {config.showSocial && data.socialMedia && (
+      <div>
+        <Text tag="h4" fontWeight="bold">Réseaux Sociaux</Text>
+        <List
+          items={data.socialMedia.map(s => `${s.name} → ${s.url}`)}
+        />
+      </div>
+    )}
+
+    {config.showNavPrimary && data.navLinks && (
+      <div>
+        <Text tag="h4" fontWeight="bold">Navigation principale</Text>
+        <List items={data.navLinks.map(link => `${link.name} → ${link.url}`)} />
+      </div>
+    )}
+
+    {config.showNavSecondary && data.navLinksSecondary && (
+      <div>
+        <Text tag="h4" fontWeight="bold">Navigation secondaire</Text>
+        <List items={data.navLinksSecondary.map(link => `${link.name} → ${link.url}`)} />
+      </div>
+    )}
+
+    {config.showContactInfo && (
+      <div>
+        <Text tag="h4" fontWeight="bold">Contact</Text>
+        <List
+          items={[
+            data.email && `Email : ${data.email}`,
+            data.telephone && `Téléphone : ${data.telephone}`,
+            data.faxNumber && `Fax : ${data.faxNumber}`,
+          ].filter(Boolean)}
+        />
+      </div>
+    )}
+
+    {config.showAddress && data.address && (
+      <div>
+        <Text tag="h4" fontWeight="bold">Adresse</Text>
+        <Text tag="p">
+          {data.address.streetAddress}, {data.address.postalCode} {data.address.addressLocality}, {data.address.addressCountry}
+        </Text>
+      </div>
+    )}
+
+    {config.showLegalInfo && (
+      <div>
+        <Text tag="h4" fontWeight="bold">Mentions légales</Text>
+        <List
+          items={[
+            data.legalName && `Raison sociale : ${data.legalName}`,
+            data.siret && `SIRET : ${data.siret}`,
+            data.vatID && `TVA : ${data.vatID}`,
+            data.nafCode && `Code NAF : ${data.nafCode}`,
+            data.foundingDate && `Créé le : ${data.foundingDate}`,
+            data.foundingLocation && `Lieu : ${data.foundingLocation}`,
+            data.founder && `Fondateur : ${Array.isArray(data.founder) ? data.founder.join(", ") : data.founder}`,
+          ].filter(Boolean)}
+        />
+      </div>
+    )}
+
+  </Wrapper>
+
+  {config.showCopyright && (
+    <Wrapper display="flex" justifyContent="center">
+      <Text tag="p" fontSize="13px" textAlign="center">
+        {data.footerText}
+      </Text>
+    </Wrapper>
+  )}
+</Section>
