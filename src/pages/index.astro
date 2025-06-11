@@ -11,11 +11,11 @@ import Table from "@atoms/Table.astro";
 import Input from "@atoms/Input.astro";
 import Form from "@organisms/Form.astro";
 import Faq from "@organisms/Faq.astro";
-import Wrapper from "@atoms/Wrapper2.astro";
+import Wrapper2 from "@atoms/Wrapper2.astro";
 import Image from "astro/components/Image.astro";
 import Slider from "@molecules/Slider.astro";
 import Carousel from "@molecules/Carousel.astro";
-
+import Gallery from "@molecules/Gallery.astro";
 
 function handleSubmit(event: Event) {
   event.preventDefault();
@@ -25,661 +25,369 @@ function handleSubmit(event: Event) {
   alert(`Données envoyées : ${JSON.stringify(values, null, 2)}`);
 }
 
+// Sample gallery images
+const galleryImages = [
+  { src: "https://picsum.photos/400/300?random=1", alt: "Image 1", caption: "Beautiful landscape" },
+  { src: "https://picsum.photos/400/300?random=2", alt: "Image 2", caption: "City skyline" },
+  { src: "https://picsum.photos/400/300?random=3", alt: "Image 3", caption: "Nature scene" },
+  { src: "https://picsum.photos/400/300?random=4", alt: "Image 4", caption: "Architecture" },
+  { src: "https://picsum.photos/400/300?random=5", alt: "Image 5", caption: "Abstract art" },
+  { src: "https://picsum.photos/400/300?random=6", alt: "Image 6", caption: "Portrait" }
+];
+
+const productImages = [
+  { 
+    src: "https://picsum.photos/600/400?random=10", 
+    alt: "Product main view", 
+    caption: "Main product view",
+    thumb: "https://picsum.photos/100/100?random=10"
+  },
+  { 
+    src: "https://picsum.photos/600/400?random=11", 
+    alt: "Product side view", 
+    caption: "Side view",
+    thumb: "https://picsum.photos/100/100?random=11"
+  },
+  { 
+    src: "https://picsum.photos/600/400?random=12", 
+    alt: "Product detail", 
+    caption: "Detail view",
+    thumb: "https://picsum.photos/100/100?random=12"
+  },
+  { 
+    src: "https://picsum.photos/600/400?random=13", 
+    alt: "Product back view", 
+    caption: "Back view",
+    thumb: "https://picsum.photos/100/100?random=13"
+  }
+];
 ---
 
-<Layout title="Design System" description="Un design system complet avec des composants réutilisables et des styles cohérents.">
+<Layout title="Design System Ultra-Performant" description="Un design system complet avec des composants réutilisables et des styles cohérents, optimisé pour la performance.">
 
-
-<Section id="token-design" textAlign="center" backgroundColor="#ecf0f1">
-    <Text tag="h2" border backgroundColor="yellow" iconLeft="mdi:design" align="center" textColor="#2c3e50" iconSize={24}>
-        Tokens Design
+<!-- Hero Section with Primary Preset -->
+<Section preset="primary" textAlign="center" minHeight="60vh" tag="header">
+  <Wrapper2 preset="primary" display="flex" flexDirection="column" justifyContent="center" alignItems="center" gap="2rem">
+    <Text tag="h1" fontSize="3rem" fontWeight="bold" textColor="white">
+      Design System Ultra-Performant
     </Text>
-        Composants HTML
-    <Text tag="p">Regroupement complet des éléments HTML natifs, organisés par catégories.</Text>
-    <Wrapper display="grid" cols={2}>
-        <Section id="palette-couleurs" textAlign="center" backgroundColor="#ecf0f1" style="border-radius:8px; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
-            <Text tag="h3" border backgroundColor="yellow" iconLeft="mdi:palette">1. La Palette de Couleurs</Text>
-            <Text tag="p">Voici un aperçu des couleurs disponibles dans notre design system :</Text>
-            <Wrapper id="grid-colors" display="grid" cols={3} gap="1rem">
-                <Section tag="div" backgroundColor="primary"><strong>#2c2e3b</strong><br />Primary</Section>
-                <Section tag="div" backgroundColor="secondary"><strong>#e0e2e9</strong><br />Secondary</Section>
-                <Section tag="div" backgroundColor="accent"><strong>#5e6b8a</strong><br />Accent</Section>
-                <Section tag="div" backgroundColor="background"><strong>#f8f9fc</strong><br />Background</Section>
-                <Section tag="div" backgroundColor="text"><strong>#1f2527</strong><br />Text</Section>
-                <Section tag="div" backgroundColor="border"><strong>#d5d8e0</strong><br />Border</Section>
-                <Section tag="div" backgroundColor="hover"><strong>#c4c8d4</strong><br />Hover</Section>
-                <Section tag="div" backgroundColor="focus"><strong>#5e6b8a</strong><br />Focus</Section>
-                <Section tag="div" backgroundColor="warning"><strong>#f0ad4e</strong><br />Warning</Section>
-                <Section tag="div" backgroundColor="info"><strong>#5bc0de</strong><br />Info</Section>
-                <Section tag="div" backgroundColor="disabled"><strong>#a0a4b0</strong><br />Disabled</Section>
-                <Section tag="div" backgroundColor="muted"><strong>#6b7280</strong><br />Muted</Section>
-                <Section tag="div" backgroundColor="surface"><strong>#ffffff</strong><br />Surface</Section>
-                <Section tag="div" backgroundColor="shadow"><strong>rgba(0, 0, 0, 0.1)</strong><br />Shadow</Section>
-                <Section tag="div" backgroundColor="shadow-dark"><strong>rgba(0, 0, 0, 0.3)</strong><br />Shadow Dark</Section>
-                <Section tag="div" backgroundColor="error"><strong>#dc3545</strong><br />Error</Section>
-                <Section tag="div" backgroundColor="success"><strong>#28a745</strong><br />Success</Section>
-                <!-- Déclinaisons Light -->
-                <Section tag="div" backgroundColor="primary-light"><strong>#4a4f6e</strong><br />Primary Light</Section>
-                <Section tag="div" backgroundColor="secondary-light"><strong>#f0f2f7</strong><br />Secondary Light</Section>
-                <Section tag="div" backgroundColor="accent-light"><strong>#8a9ab8</strong><br />Accent Light</Section>
-                <!-- Déclinaisons Dark -->
-                <Section tag="div" backgroundColor="primary-dark"><strong>#1a1c27</strong><br />Primary Dark</Section>
-                <Section tag="div" backgroundColor="secondary-dark"><strong>#b0b4c3</strong><br />Secondary Dark</Section>
-                <Section tag="div" backgroundColor="accent-dark"><strong>#3e4a67</strong><br />Accent Dark</Section>
-                <Section tag="div" backgroundColor="background-dark"><strong>#1f2527</strong><br />Background Dark</Section>
-                <Section tag="div" backgroundColor="text-dark"><strong>#f8f9fc</strong><br />Text Dark</Section>
-                <Section tag="div" backgroundColor="border-dark"><strong>#3e4a67</strong><br />Border Dark</Section>
-                <Section tag="div" backgroundColor="hover-dark"><strong>#5e6b8a</strong><br />Hover Dark</Section>
-                <Section tag="div" backgroundColor="surface-dark"><strong>#2c2e3b</strong><br />Surface Dark</Section>
-                <Section tag="div" backgroundColor="muted-dark"><strong>#a0a4b0</strong><br />Muted Dark</Section>
-            </Wrapper>
-        </Section>
-        <Section id="typographie" textAlign="left" >
-            <Text tag="h3" border backgroundColor="yellow" iconLeft="mdi:format-font" align="left" iconSize={20}>
-            2 Les Typographies
-            </Text>
-            <Wrapper id="grid-police" display="grid" cols={2} gap="1rem">
-                <Text tag="p" fontFamily="Bowlby One SC" fontSize="32px" padding="1rem" backgroundColor="orange" align="center" style="border: 1px solid #ccc; border-radius: 6px;">
-                    Bowlby One SC
-                </Text>
-                <Text tag="p" fontFamily="base" fontSize="24px" padding="1rem" backgroundColor="orange"  align="center" style="border: 1px solid #ccc; border-radius: 6px;">
-                    Palanquin Dark 
-              </Text>
-            </Wrapper>
-
-                <Text tag="h3" border backgroundColor="yellow" border iconLeft="mdi:format-header-1" align="center" iconSize={22}>
-                    Tailles des Textes
-                </Text>
-
-                <Text tag="h1" iconLeft="mdi:format-header-1" align="left" iconSize={32}>Titre h1</Text>
-                <Text tag="h2" iconLeft="mdi:format-header-2" align="left" iconSize={28}>Titre h2</Text>
-                <Text tag="h3" iconLeft="mdi:format-header-3" align="left" iconSize={24}>Titre h3</Text>
-                <Text tag="h4" iconLeft="mdi:format-header-4" align="left" iconSize={20}>Titre h4</Text>
-                <Text tag="h5" iconLeft="mdi:format-header-5" align="left" iconSize={18}>Titre h5</Text>
-                <Text tag="h6" iconLeft="mdi:format-header-6" align="left" iconSize={16}>Titre h6</Text>
-
-                <p>Ceci est un paragraphe simple.</p>
-                <p>Un autre paragraphe, pour démontrer la séparation des blocs de texte.</p>
-                <p>Texte normal, <strong>gras</strong>, <em>italique</em>, <u>souligné</u>, <s>barré</s>, <mark>surligné</mark></p>
-                <p><small>Texte petit (small)</small> et <abbr title="HyperText Markup Language">HTML</abbr> avec abréviations.</p>
-                <p>Texte normal, <mark>texte surligné</mark>, liens <a href="#">hyperliens</a>.</p>
-                <p>La typographie est essentielle pour la lisibilité et l'esthétique. Voici les polices utilisées :</p>
-
-        </Section>
-    </Wrapper>
-</Section>
-<hr />
-
-<Section id="liens-boutons" textAlign="center" backgroundColor="#ecf0f1">
-    <Text tag="h2" border backgroundColor="yellow" iconLeft="mdi:button-pointer" align="center" textColor="#2c3e50" iconSize={24}>
-        Les Liens & Boutons
+    <Text tag="p" fontSize="1.25rem" textColor="white" maxWidth="600px">
+      Découvrez notre collection de composants optimisés, sans JavaScript quand c'est possible, avec des presets élégants et une responsivité parfaite.
     </Text>
-    <Wrapper display="grid" cols={2} gap="1rem">
-        <Section id="liens">
-
-            <Text tag="h3" iconLeft="mdi:link" iconSize={24} align="left">
-            Les Liens
-            </Text>
-            <Wrapper id="grid-links" display="grid" cols={2} gap="1rem">
-                <!-- Link simple -->
-                <Link href="https://example.com" ariaLabel="Lien simple externe vers example.com" text="Lien simple externe"
-                icon={{ name: 'mdi:open-in-new', side: 'right' }} style="link" border={true} shadow={false} shape="sharp"/>
-                <!-- Link bouton -->
-                <Link href="https://example.com/contact" ariaLabel="Bouton lien vers contact" text="Bouton style" style="button" background="var(--color-secondary)" border={true} shadow={true} shape="rounded" icon={{ name: 'mdi:email', side: 'left' }}/>
-                <!-- Link avec icône gauche uniquement -->
-                <Link href="/docs" ariaLabel="Lien vers documentation interne" text="Lien icône gauche" icon={{ name: 'mdi:file-document-outline', side: 'left' }} style="link" border={false} shadow={false} shape="rounded"/>
-                <!-- Link bouton avec icône droite uniquement -->
-                <Link href="/signup" ariaLabel="Bouton s'inscrire" text="S'inscrire" style="button" border={false} shadow={true} shape="circle" icon={{ name: 'mdi:account-plus', side: 'right' }}/>
-                <!-- Link sans texte slot -->
-                <Link href="https://github.com" ariaLabel="Lien GitHub icon only" style="link" border={false} shadow={false} shape="circle" classes="icon-only" icon={{ name: 'mdi:github', side: 'left' }}/>
-                <!-- Bouton primary sur fond clair -->
-                <Link href="#" ariaLabel="Lien primaire clair" text="Primary" style="button" background="primary" textColor="text-dark" border={true} shadow={true} shape="rounded" icon={{ name: 'mdi:check', side: 'left' }}/>
-                <!-- Bouton primary-light sur texte normal -->
-                <Link href="#" ariaLabel="Lien primaire light" text="Primary Light" style="button" backgroundColor="primary-light" textColor="text" border={true} shadow={false} shape="rounded" icon={{ name: 'mdi:weather-sunny', side: 'left' }}/>
-                <!-- Bouton primary-dark avec texte clair -->
-                <Link href="#" ariaLabel="Lien primaire foncé" text="Primary Dark" style="button" backgroundColor="primary-dark" textColor="surface" border={false} shadow={true} shape="rounded" icon={{ name: 'mdi:weather-night', side: 'right' }}/>
-                <!-- Bouton secondary -->
-                <Link href="#" ariaLabel="Lien secondaire" text="Secondary" style="button" backgroundColor="secondary" textColor="white" border={true} shadow={true} shape="rounded" icon={{ name: 'mdi:star', side: 'left' }}/>
-                <!-- Bouton accent-light + texte foncé -->
-                <Link href="#" ariaLabel="Lien accent" text="Accent" style="button" backgroundColor="accent-light" textColor="primary-dark" border={false} shadow={false} shape="rounded" icon={{ name: 'mdi:flash', side: 'right' }}/>
-                <!-- Bouton erreur rouge -->
-                <Link href="#" ariaLabel="Lien erreur" text="Erreur" style="button" backgroundColor="error" textColor="white" border={true} shadow={true} shape="rounded" icon={{ name: 'mdi:alert-circle', side: 'left' }}/>
-                <!-- Bouton succès -->
-                <Link href="#" ariaLabel="Lien succès" text="Succès" style="button" backgroundColor="success" textColor="surface" border={true} shadow={false} shape="rounded" icon={{ name: 'mdi:check-bold', side: 'right' }}/>
-                <!-- Bouton alerte -->
-                <Link href="#" ariaLabel="Lien alerte" text="Attention" style="button" backgroundColor="warning" textColor="black" border={true} shadow={true} shape="rounded" icon={{ name: 'mdi:alert', side: 'left' }}/>
-                <!-- Bouton surface sombre -->
-                <Link href="#" ariaLabel="Lien sombre" text="Sombre" style="button" backgroundColor="surface-dark" textColor="text" border={true} shadow={true} shape="rounded" icon={{ name: 'mdi:eye-off', side: 'left' }}/>
-            </Wrapper>            
-        </Section>
-        <Section id="boutons" textAlign="left">
-            <Text tag="h3" iconLeft="mdi:gesture-tap-button" iconSize={24} align="left">
-            Les Boutons
-            </Text>
-            <Wrapper id="grid-buttons" display="grid" cols={2} gap="1rem">
-            <!-- Bouton simple -->
-            <Button ariaLabel="Bouton simple" text="Simple" type="button" icon={{ name: 'mdi:gesture-tap', side: 'left' }} border={true} shadow={false} shape="sharp" />
-            <!-- Bouton coloré secondaire -->
-            <Button ariaLabel="Bouton secondaire" text="Secondaire" type="submit" backgroundColor="secondary" textColor="white" border={true} shadow={true} shape="rounded" icon={{ name: 'mdi:email-send', side: 'right' }} />
-            <!-- Bouton avec icône gauche uniquement -->
-            <Button ariaLabel="Bouton upload" text="Téléverser" type="button" icon={{ name: 'mdi:upload', side: 'left' }} backgroundColor="primary" textColor="background" shape="rounded" />
-            <!-- Bouton cercle icône droite -->
-            <Button ariaLabel="Ajouter utilisateur" text="" type="button" shape="circle" icon={{ name: 'mdi:account-plus', side: 'right' }} backgroundColor="accent" textColor="white" />
-            <!-- Bouton icône seul -->
-            <Button ariaLabel="GitHub" text="" type="button" shape="circle" icon={{ name: 'mdi:github', side: 'left' }} backgroundColor="text" textColor="background" />
-            <!-- Bouton primary clair -->
-            <Button ariaLabel="Primary" text="Primary" backgroundColor="primary" textColor="text-dark" border={true} shadow={true} shape="rounded" icon={{ name: 'mdi:check', side: 'left' }} />
-            <!-- Bouton primary-light -->
-            <Button ariaLabel="Primary Light" text="Primary Light" backgroundColor="primary-light" textColor="text" border={true} shadow={false} shape="rounded" icon={{ name: 'mdi:weather-sunny', side: 'left' }} />
-            <!-- Bouton primary-dark -->
-            <Button ariaLabel="Primary Dark" text="Primary Dark" backgroundColor="primary-dark" textColor="surface" shadow={true} shape="rounded" icon={{ name: 'mdi:weather-night', side: 'right' }} />
-            <!-- Bouton secondary -->
-            <Button ariaLabel="Secondary" text="Secondary" backgroundColor="secondary" textColor="white" border={true} shadow={true} shape="rounded" icon={{ name: 'mdi:star', side: 'left' }} />
-            <!-- Bouton accent-light -->
-            <Button ariaLabel="Accent" text="Accent" backgroundColor="accent-light" textColor="primary-dark" shape="rounded" icon={{ name: 'mdi:flash', side: 'right' }} />
-            <!-- Bouton erreur rouge -->
-            <Button ariaLabel="Erreur" text="Erreur" backgroundColor="error" textColor="white" border={true} shadow={true} shape="rounded" icon={{ name: 'mdi:alert-circle', side: 'left' }} />
-            <!-- Bouton succès -->
-            <Button ariaLabel="Succès" text="Succès" backgroundColor="success" textColor="surface" border={true} shape="rounded" icon={{ name: 'mdi:check-bold', side: 'right' }} />
-            <!-- Bouton alerte jaune -->
-            <Button ariaLabel="Alerte" text="Attention" backgroundColor="warning" textColor="black" border={true} shadow={true} shape="rounded" icon={{ name: 'mdi:alert', side: 'left' }} />
-            <!-- Bouton surface sombre -->
-            <Button ariaLabel="Sombre" text="Sombre" backgroundColor="surface-dark" textColor="text" border={true} shadow={true} shape="rounded" icon={{ name: 'mdi:eye-off', side: 'left' }} />
-            </Wrapper>
-        </Section>
-    </Wrapper>
+    <Wrapper2 display="flex" gap="1rem" flexWrap="wrap" justifyContent="center">
+      <Button preset="primary" text="Découvrir" backgroundColor="white" textColor="var(--color-primary)" />
+      <Button preset="secondary" text="Documentation" backgroundColor="transparent" textColor="white" border />
+    </Wrapper2>
+  </Wrapper2>
 </Section>
-<hr />
 
-<Section id="icones-images-listes" textAlign="center" backgroundColor="#ecf0f1">
-    <Text tag="h2" border backgroundColor="yellow" iconLeft="mdi:palette" align="center" textColor="#2c3e50" iconSize={24}>Les Listes & Détails</Text>
-    <Wrapper display="grid" cols={2} gap="1rem">
-        <Section id="listes" textAlign="left">
-          <Text tag="h3" border backgroundColor="yellow" iconLeft="mdi:format-list-bulleted" align="left" iconSize={20}>
-            Listes
-          </Text>
-
-            <Text tag="h4" border iconLeft="mdi:format-list-bulleted-type" align="left" iconSize={18}>
-              Liste non ordonnée avec icône globale
-            </Text>
-            <List
-              items={['Item un', 'Item deux', 'Item trois']}
-              icon="mdi:check"
-              backgroundColor="surface"
-              border
-              shadow
-              spacing="0.75em"
-              padding="1em"
-              textAlign="left"
-              shape="rounded"
-            />
-
-            <Text tag="h4" border iconLeft="mdi:format-list-numbered" align="left" iconSize={18}>
-              Liste ordonnée avec icônes personnalisées
-            </Text>
-            <List
-              ordered
-              showMarkers={false}
-              items={[
-                { icon: 'mdi:numeric-1-circle', text: 'Première étape' },
-                { icon: 'mdi:numeric-2-circle', text: 'Deuxième étape' },
-                { icon: 'mdi:numeric-3-circle', text: 'Troisième étape' }
-              ]}
-              backgroundColor="background"
-              textColor="text"
-              border
-              borderColor="primary"
-              padding="1.5em"
-              shape="sharp"
-            />
-
-            <Text tag="h4" border iconLeft="mdi:format-list-bulleted-square" align="left" iconSize={18}>
-              Liste imbriquée avec puces visibles
-            </Text>
-            <List
-              items={[
-                {
-                  text: 'Item principal',
-                },
-                {
-                  text: 'Item secondaire'
-                }
-              ]}
-              showMarkers={true}
-              padding="1em"
-              backgroundColor="surface"
-              shape="rounded"
-            >
-              <ul>
-                <li>Sous-item 1</li>
-                <li>Sous-item 2</li>
-              </ul>
-            </List>
-
-            <Text tag="h4" border iconLeft="mdi:playlist-edit" align="left" iconSize={18}>
-              Liste avec `showMarkers` désactivé (pas de puces)
-            </Text>
-            <List
-              items={['Sans puce 1', 'Sans puce 2']}
-              showMarkers={false}
-              padding="1em"
-              shape="circle"
-              backgroundColor="muted"
-              textColor="text"
-            />
-        </Section>
-
-         <Section id="details" textAlign="center" backgroundColor="#ecf0f1" style="border-radius:8px; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
-          <Text tag="h3" border backgroundColor="yellow" iconLeft="mdi:database" align="left" iconSize={24}>3. Détails</Text>
-          <Section>
-            <Section>
-              <!-- 1. Résumé simple, sans icône -->
-              <Details
-                summary="Résumé simple, sans icône"
-                open
-                border
-                padding="1em 1.5em"
-                margin="1em 0"
-                backgroundColor="surface"
-                textColor="text"
-                summaryFontWeight="700"
-              >
-                <p>Contenu visible par défaut, sans icône dans le summary.</p>
-              </Details>
-              <Details
-                summary="Résumé simple, sans icône"
-                open
-                border
-                padding="1em 1.5em"
-                margin="1em 0"
-                backgroundColor="surface"
-                textColor="text"
-                summaryFontWeight="700"
-              >
-                <p>Contenu visible par défaut, sans icône dans le summary.</p>
-              </Details>
-
-              <!-- 2. Résumé avec icône à gauche -->
-              <Details
-                summary="Résumé avec icône à gauche"
-                iconSummary={{ name: 'mdi:information-outline', side: 'left', size: 18 }}
-                border
-                shape="rounded"
-                shadow
-                padding="1em"
-                margin="1em 0"
-                summaryTextColor="primary"
-                summaryFontSize="1.1rem"
-                summaryTextAlign="left"
-                >
-                <p>Contenu avec icône à gauche dans le summary, bordure et ombre activées.</p>
-              </Details>
-              <Details
-                summary="Résumé avec icône à gauche"
-                iconSummary={{ name: 'mdi:information-outline', side: 'left', size: 18 }}
-                border
-                shape="rounded"
-                shadow
-                padding="1em"
-                margin="1em 0"
-                summaryTextColor="primary"
-                summaryFontSize="1.1rem"
-                summaryTextAlign="left"
-                >
-                <p>Contenu avec icône à gauche dans le summary, bordure et ombre activées.</p>
-              </Details>
-
-              <!-- 3. Résumé avec icône à droite -->
-              <Details
-                summary="Résumé avec icône à droite"
-                iconSummary={{ name: 'mdi:alert-circle-outline', side: 'right', size: 20 }}
-                border
-                borderColor="error"
-                borderWidth="2px"
-                borderStyle="dashed"
-                shape="sharp"
-                backgroundColor="#ffeeee"
-                padding="1em 2em"
-                margin="1em 0"
-                summaryFontWeight="600"
-                summaryTextAlign="right"
-              >
-                <p>Contenu avec icône à droite, bordure rouge en style dashed, fond rouge clair.</p>
-              </Details>
-              <Details
-                summary="Résumé avec icône à droite"
-                iconSummary={{ name: 'mdi:alert-circle-outline', side: 'right', size: 20 }}
-                border
-                borderColor="error"
-                borderWidth="2px"
-                borderStyle="dashed"
-                shape="sharp"
-                backgroundColor="#ffeeee"
-                padding="1em 2em"
-                margin="1em 0"
-                summaryFontWeight="600"
-                summaryTextAlign="right"
-              >
-                <p>Contenu avec icône à droite, bordure rouge en style dashed, fond rouge clair.</p>
-              </Details>
-
-              <!-- 4. Résumé avec icônes personnalisées ouvert/fermé -->
-              <Details
-                summary="Résumé avec icônes personnalisées ouvert/fermé"
-                iconOpen={{ name: 'mdi:minus', size: 24 }}
-                iconClose={{ name: 'mdi:plus', size: 24 }}
-                open={false}
-                border
-                shadow
-                shape="circle"
-                padding="1em 2em"
-                margin="1em 0"
-                summaryTextColor="accent"
-                summaryFontSize="1.2rem"
-              >
-                <p>Toggle icônes + / - personnalisées avec forme cercle et ombre.</p>
-              </Details>
-              <Details
-                summary="Résumé avec icônes personnalisées ouvert/fermé"
-                iconOpen={{ name: 'mdi:minus', size: 24 }}
-                iconClose={{ name: 'mdi:plus', size: 24 }}
-                open={false}
-                border
-                shadow
-                shape="circle"
-                padding="1em 2em"
-                margin="1em 0"
-                summaryTextColor="accent"
-                summaryFontSize="1.2rem"
-              >
-                <p>Toggle icônes + / - personnalisées avec forme cercle et ombre.</p>
-              </Details>
-
-              <!-- 5. Résumé avec animation lente -->
-              <Details
-                summary="Résumé avec animation lente"
-                open
-                border
-                animationDuration="0.8s"
-                animationTimingFunction="cubic-bezier(0.4, 0, 0.2, 1)"
-                padding="1em"
-                margin="1em 0"
-                summaryFontWeight="bold"
-              >
-                <p>Cette instance utilise une animation d’ouverture/fermeture plus lente et fluide.</p>
-              </Details>
-              <Details
-                summary="Résumé avec animation lente"
-                open
-                border
-                animationDuration="0.8s"
-                animationTimingFunction="cubic-bezier(0.4, 0, 0.2, 1)"
-                padding="1em"
-                margin="1em 0"
-                summaryFontWeight="bold"
-              >
-                <p>Cette instance utilise une animation d’ouverture/fermeture plus lente et fluide.</p>
-              </Details>
-
-              <!-- 6. Résumé sans bordure ni ombre, icône summary gauche et texte centré -->
-              <Details
-                summary="Résumé sans bordure ni ombre, icône summary gauche et texte centré"
-                iconSummary={{ name: 'mdi:account', side: 'left', size: 18 }}
-                summaryTextAlign="center"
-                padding="1em"
-                margin="1em 0"
-              >
-                <p>Pas de bordure ni d’ombre, icône summary à gauche, texte summary centré.</p>
-              </Details>
-              <Details
-                summary="Résumé sans bordure ni ombre, icône summary gauche et texte centré"
-                iconSummary={{ name: 'mdi:account', side: 'left', size: 18 }}
-                summaryTextAlign="center"
-                padding="1em"
-                margin="1em 0"
-              >
-                <p>Pas de bordure ni d’ombre, icône summary à gauche, texte summary centré.</p>
-              </Details>
-			    </Section>
-		    </Section>
-    </Wrapper>
+<!-- Section & Wrapper Presets Demo -->
+<Section preset="secondary" textAlign="center">
+  <Wrapper2 preset="default" cols={2} gap="2rem">
+    <div>
+      <Text tag="h2" fontSize="2rem" fontWeight="bold" marginBottom="1rem">
+        Section & Wrapper Presets
+      </Text>
+      <Text tag="p" marginBottom="2rem">
+        Quatre presets disponibles pour chaque composant : default, primary, secondary, accent
+      </Text>
+    </div>
+    
+    <Wrapper2 preset="accent" padding="2rem" textAlign="center">
+      <Text tag="h3" fontSize="1.5rem" fontWeight="bold" marginBottom="1rem">
+        Wrapper Accent
+      </Text>
+      <Text tag="p">
+        Ce wrapper utilise le preset accent avec des styles prédéfinis optimisés.
+      </Text>
+    </Wrapper2>
+  </Wrapper2>
 </Section>
-<hr />
 
-<Section id="details-tableaux" textAlign="center" backgroundColor="#ecf0f1">
-    <Text tag="h2" border backgroundColor="yellow" iconLeft="mdi:palette" align="center" textColor="#2c3e50" iconSize={24}>
-        Images et Tableaux
-    </Text>
-    <Wrapper display="grid" cols={2} gap="1rem">
-        <Section id="images" textAlign="center" backgroundColor="#ecf0f1" style="border-radius:8px; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
-          <Text tag="h3" border backgroundColor="yellow" iconLeft="mdi:image" align="left" iconSize={20}>Images</Text>
-          <Text tag="p">Exemple d'image :</Text>
-            <img src="https://via.placeholder.com/40" alt="Icône exemple" width="40" height="40" />      
-        </Section>   
+<!-- Gallery Showcase -->
+<Section preset="default" textAlign="center">
+  <Wrapper2 cols={1} gap="3rem">
+    <div>
+      <Text tag="h2" fontSize="2rem" fontWeight="bold" marginBottom="1rem">
+        Galeries Ultra-Performantes
+      </Text>
+      <Text tag="p" marginBottom="2rem">
+        Quatre modes de galerie sans JavaScript : gallery, galleryPictures, galleryProductThumb, galleryEnhanced
+      </Text>
+    </div>
 
-        <Section id="tableaux" textAlign="left">
-          <Text tag="h3" border backgroundColor="yellow" iconLeft="mdi:table" align="left" iconSize={20}>
-            Tableaux
-          </Text>
-            <table border="1" cellpadding="4" cellspacing="0">
-              <caption>Exemple de tableau simple</caption>
-              <thead>
-                <tr>
-                  <th>Nom</th>
-                  <th>Âge</th>
-                  <th>Ville</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>Jean</td>
-                  <td>28</td>
-                  <td>Paris</td>
-                </tr>
-                <tr>
-                  <td>Marie</td>
-                  <td>32</td>
-                  <td>Lyon</td>
-                </tr>
-              </tbody>
-              <tfoot>
-                <tr>
-                  <td colspan="3">Fin du tableau</td>
-                </tr>
-              </tfoot>
-            </table>
-            <Table
-              columns={[
-              { key: 'name', label: 'Nom', align: 'left', width: '40%' },
-              { key: 'age', label: 'Âge', align: 'center', width: '20%' },
-              { key: 'city', label: 'Ville', align: 'right', width: '40%' },
-              ]}
-              data={[
-              { name: 'Alice', age: 30, city: 'Paris' },
-              { name: 'Bob', age: 25, city: 'Lyon' },
-              { name: 'Charlie', age: 35, city: 'Marseille' },
-              ]}
-              striped
-              bordered
-              hover
-            />
+    <!-- Standard Gallery -->
+    <div>
+      <Text tag="h3" fontSize="1.5rem" fontWeight="semibold" marginBottom="1rem">
+        Gallery Standard (Preset Primary)
+      </Text>
+      <Gallery 
+        images={galleryImages} 
+        mode="gallery" 
+        preset="primary"
+        columns={3}
+        aspectRatio="4/3"
+      />
+    </div>
 
-            <Table
-              columns={[
-              { key: 'name', label: 'Nom', align: 'left' },
-              { key: 'age', label: 'Âge', align: 'center' },
-              { key: 'city', label: 'Ville', align: 'right' },
-              ]}
-              data={[
-              { name: 'Alice', age: 30, city: 'Paris' },
-              { name: 'Bob', age: 25, city: 'Lyon' },
-              { name: 'Charlie', age: 35, city: 'Marseille' },
-              ]}
-              compact
-            />
-        </Section>
-    </Wrapper>
-</Section>
-<hr />
+    <!-- Pictures Gallery (Masonry) -->
+    <div>
+      <Text tag="h3" fontSize="1.5rem" fontWeight="semibold" marginBottom="1rem">
+        Gallery Pictures - Masonry (Preset Secondary)
+      </Text>
+      <Gallery 
+        images={galleryImages} 
+        mode="galleryPictures" 
+        preset="secondary"
+        columns={4}
+      />
+    </div>
 
-<Section id="formulaires-fqs" textAlign="center" backgroundColor="#ecf0f1">
-    <Text tag="h2" border backgroundColor="yellow" iconLeft="mdi:form" iconRight="mdi:form" iconPosition="both" align="center" textColor="#2c3e50" iconSize={24}>
-        Formulaires & Faqs
-    </Text>
-    <Wrapper display="grid" cols={2} gap="1rem">
-     <Section id="formulaires" textAlign="center" backgroundColor="#ecf0f1" style="border-radius:8px; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
-      <Text tag="h3" border backgroundColor="yellow" iconLeft="mdi:form-textbox" align="left" iconSize={20}>Formulaires</Text>
-	  <Text tag="p">Exemple de formulaire simple :</Text>
-	   <Section>
-      <Form onSubmit={handleSubmit} className="demo-form" style="max-width: 600px; margin: 2em auto;">
-        <Input id="name" name="name" type="text" label="Nom" placeholder="Kevin" required />
-        <Input id="email" name="email" type="email" label="Email" placeholder="exemple@domaine.com" required iconLeft={{ name: 'mdi:email-outline', size: 18 }} />
-        <Input id="age" name="age" type="number" label="Âge" min={0} max={120} />
-        <Input id="color" name="color" type="color" label="Couleur préférée" />
-        <Input id="birthday" name="birthday" type="date" label="Date de naissance" />
-        <Input id="website" name="website" type="url" label="Site Web" />
-        <Input id="bio" name="bio" type="textarea" label="Biographie" rows={4} cols={40} placeholder="Écrivez ici..." />
-        <fieldset>
-          <legend>Sexe</legend>
-          <label><input type="radio" id="gender-male" name="gender" value="male" /> Homme</label>
-          <label><input type="radio" id="gender-female" name="gender" value="female" /> Femme</label>
-          <label><input type="radio" id="gender-other" name="gender" value="other" /> Autre</label>
-        </fieldset>
-        <fieldset>
-          <legend>Centres d'intérêt</legend>
-          <label><input type="checkbox" id="interest-sport" name="interests" value="sport" /> Sport</label>
-          <label><input type="checkbox" id="interest-music" name="interests" value="music" /> Musique</label>
-          <label><input type="checkbox" id="interest-reading" name="interests" value="reading" /> Lecture</label>
-        </fieldset>
-        <Input 
-          id="country"
-          name="country"
-          type="select"
-          label="Pays"
-          options={[
-            { value: '', label: 'Sélectionnez' },
-            { value: 'france', label: 'France' },
-            { value: 'belgium', label: 'Belgique' },
-            { value: 'canada', label: 'Canada' },
-          ]}
+    <!-- Product Thumbnail Gallery -->
+    <div>
+      <Text tag="h3" fontSize="1.5rem" fontWeight="semibold" marginBottom="1rem">
+        Gallery Product Thumbnails (Preset Accent)
+      </Text>
+      <Wrapper2 maxWidth="600px" margin="0 auto">
+        <Gallery 
+          images={productImages} 
+          mode="galleryProductThumb" 
+          preset="accent"
         />
-        <button type="submit" class="btn-primary">Envoyer</button>
-        <button type="reset">Réinitialiser</button>
-      </Form>  
-	   </Section>
-        </Section>
-        <Section id="faqs" textAlign="left">
-          <Text tag="h3" border backgroundColor="yellow" iconLeft="mdi:help-circle" align="left" iconSize={20}>Faqs</Text>
-          <Faq faqs={[
-            { question: "Qu'est-ce qu'Astro ?", answer: "Astro est un framework moderne pour construire des sites web rapides." },
-            { question: "Comment installer Astro ?", answer: "Utilise `npm create astro@latest` pour démarrer un projet." }
-          ]} />
+      </Wrapper2>
+    </div>
 
-        <Faq faqs={[
-            {
-              question: "Comment ajouter des styles personnalisés ?",
-              answer: `
-                <p>Tu peux passer des props à <code>Details.astro</code> pour changer la couleur, la bordure, etc.</p>
-                <ul>
-                  <li>borderColor</li>
-                  <li>padding</li>
-                  <li>shadow</li>
-                </ul>
-                <p>Exemple : <code>borderColor="primary"</code> pour la bordure en couleur primaire.</p>
-              `,
-            },
-            {
-              question: "Peut-on mettre des liens dans la réponse ?",
-              answer: `
-                Oui, tu peux inclure du HTML, comme par exemple :
-                <a href="https://astro.build" target="_blank" rel="noopener">Site officiel Astro</a>.
-              `,
-            }
-          ]} />
-        </Section>
-    </Wrapper>
+    <!-- Enhanced Gallery -->
+    <div>
+      <Text tag="h3" fontSize="1.5rem" fontWeight="semibold" marginBottom="1rem">
+        Gallery Enhanced avec Overlay (Preset Default)
+      </Text>
+      <Gallery 
+        images={galleryImages} 
+        mode="galleryEnhanced" 
+        preset="default"
+        columns={3}
+        aspectRatio="16/9"
+      />
+    </div>
+  </Wrapper2>
 </Section>
-<hr />
 
+<!-- Carousel Section -->
+<Section preset="accent" textAlign="center">
+  <Wrapper2 cols={1} gap="3rem">
+    <div>
+      <Text tag="h2" fontSize="2rem" fontWeight="bold" marginBottom="1rem" textColor="white">
+        Carrousels Performants
+      </Text>
+      <Text tag="p" marginBottom="2rem" textColor="white">
+        Carrousels optimisés avec navigation tactile, clavier et contrôles accessibles
+      </Text>
+    </div>
 
-<Section id="multimedias" textAlign="center" backgroundColor="#ecf0f1">
-    <Text tag="h2" border backgroundColor="yellow" iconLeft="mdi:multimedia" align="center" textColor="#2c3e50" iconSize={24}>
-        Multimédias
-    </Text>
-    <Wrapper display="grid" cols={2} gap="1rem">
-     <Section id="images" textAlign="center" align="center" class="grid">
-      <Text tag="h3" border backgroundColor="yellow" iconLeft="mdi:panorama-variant" align="left" iconSize={20}>Images</Text>
-        <Image src="https://cataas.com/cat" alt="Image exemple" width="500" height="500" class="preset-primary-border" />
-        </Section>
-        <Section id="audio-video" textAlign="left">
-          <Text tag="h3" border backgroundColor="yellow" iconLeft="mdi:music-circle" align="left" iconSize={20}>Audio</Text>
-            <audio controls>
-              <source src="https://www.w3schools.com/html/horse.ogg" type="audio/ogg" />
-              <source src="https://www.w3schools.com/html/horse.mp3" type="audio/mpeg" />
-              Votre navigateur ne supporte pas l'élément audio.
-            </audio>
-            <Text tag="h3" border backgroundColor="yellow" iconLeft="mdi:play-circle" align="left" iconSize={20}>Vidéo</Text>
-            <video width="320" height="240" controls>
-              <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4" />
-              Votre navigateur ne supporte pas l'élément vidéo.
-            </video>
-        </Section>
-    </Wrapper>
+    <Wrapper2 cols={2} gap="2rem">
+      <!-- Carousel Primary -->
+      <div>
+        <Text tag="h3" fontSize="1.25rem" fontWeight="semibold" marginBottom="1rem" textColor="white">
+          Carousel Primary avec Auto-play
+        </Text>
+        <Carousel 
+          preset="primary"
+          idPrefix="carousel-primary"
+          showDots={true}
+          showArrows={true}
+          autoplay={true}
+          autoplayInterval={3000}
+          aspectRatio="16/9"
+        >
+          <img src="https://picsum.photos/800/450?random=20" alt="Slide 1" />
+          <img src="https://picsum.photos/800/450?random=21" alt="Slide 2" />
+          <img src="https://picsum.photos/800/450?random=22" alt="Slide 3" />
+          <img src="https://picsum.photos/800/450?random=23" alt="Slide 4" />
+        </Carousel>
+      </div>
+
+      <!-- Carousel Secondary -->
+      <div>
+        <Text tag="h3" fontSize="1.25rem" fontWeight="semibold" marginBottom="1rem" textColor="white">
+          Carousel Secondary Manuel
+        </Text>
+        <Carousel 
+          preset="secondary"
+          idPrefix="carousel-secondary"
+          showDots={true}
+          showArrows={true}
+          autoplay={false}
+          aspectRatio="4/3"
+        >
+          <img src="https://picsum.photos/800/600?random=24" alt="Slide 1" />
+          <img src="https://picsum.photos/800/600?random=25" alt="Slide 2" />
+          <img src="https://picsum.photos/800/600?random=26" alt="Slide 3" />
+        </Carousel>
+      </div>
+    </Wrapper2>
+  </Wrapper2>
 </Section>
-<hr />
-<Section id="carousels" textAlign="center" backgroundColor="#f5f7fa" padding="2rem 0">
-  <Text tag="h2" iconLeft="mdi:view-carousel" iconSize={28} textColor="#2c3e50" border backgroundColor="yellow" align="center">
-    Carousel
-  </Text>
-  <Wrapper display="grid" cols={2} gap="2rem">
-    <Section id="carousel1" textAlign="center" backgroundColor="#fff" padding="1rem" shadow border shape="rounded" margin="0 0 2rem 0">
-      <Text tag="h3" border backgroundColor="yellow" iconLeft="mdi:image" iconSize={20} textColor="#34495e" margin="0 0 1rem 0">
-        Default Carousel
-      </Text>
-      <Carousel idPrefix="carousel1" showDots={true} showScrollBar={true} showArrows={true} autoplay={true} showItemsBySlide={1}>
-        <img src="https://cataas.com/cat" alt="Slide 1" />
-        <img src="https://cataas.com/cat" alt="Slide 2" />
-        <img src="https://cataas.com/cat" alt="Slide 3" />
-        <img src="https://cataas.com/cat" alt="Slide 4" />
-      </Carousel>
-    </Section>
 
-    <Section textAlign="center" backgroundColor="#fff" padding="1rem" shadow border shape="rounded" margin="0 0 2rem 0">
-      <Text tag="h3" border backgroundColor="yellow" iconLeft="mdi:view-carousel-outline" iconSize={20} textColor="#34495e" margin="0 0 1rem 0">
-        Carousel only with dots without Autoplay
+<!-- Slider Section -->
+<Section preset="default">
+  <Wrapper2 cols={1} gap="3rem">
+    <div style="text-align: center;">
+      <Text tag="h2" fontSize="2rem" fontWeight="bold" marginBottom="1rem">
+        Sliders Horizontaux
       </Text>
-      <Carousel idPrefix="carousel2" showDots={true} showScrollBar={false} showArrows={true} autoplay={false} showItemsBySlide={1}>
-        <div>Item 1</div>
-        <div>Item 2</div>
-        <div>Item 3</div>
-        <div>Item 4</div>
-      </Carousel>
-    </Section>
+      <Text tag="p" marginBottom="2rem">
+        Sliders avec défilement fluide, support tactile et contrôles de navigation
+      </Text>
+    </div>
 
-    <Section textAlign="center" backgroundColor="#fff" padding="1rem" shadow border shape="rounded" margin="0 0 2rem 0">
-      <Text tag="h3" border backgroundColor="yellow" iconLeft="mdi:view-carousel-outline" iconSize={20} textColor="#34495e" margin="0 0 1rem 0">
-        Remove all Controls
+    <!-- Slider Primary -->
+    <div>
+      <Text tag="h3" fontSize="1.5rem" fontWeight="semibold" marginBottom="1rem">
+        Slider Primary avec Auto-scroll
       </Text>
-      <Carousel idPrefix="carousel3" showDots={false} showScrollBar={false} showArrows={false} autoplay={true} showItemsBySlide={1}>
-        <img src="https://cataas.com/cat" alt="Slide 1" />
-        <img src="https://cataas.com/cat" alt="Slide 2" />
-        <img src="https://cataas.com/cat" alt="Slide 3" />
-        <img src="https://cataas.com/cat" alt="Slide 4" />
-      </Carousel>
-    </Section>
+      <Slider 
+        preset="primary"
+        gap="2rem"
+        itemMinWidth="300px"
+        autoScroll={true}
+        scrollSpeed={30}
+      >
+        <div style="text-align: center;">
+          <img src="https://picsum.photos/280/200?random=30" alt="Item 1" style="width: 100%; border-radius: 0.5rem; margin-bottom: 1rem;" />
+          <Text tag="h4" fontSize="1.125rem" fontWeight="semibold">Produit 1</Text>
+          <Text tag="p" fontSize="0.875rem" textColor="var(--color-muted)">Description du produit</Text>
+        </div>
+        <div style="text-align: center;">
+          <img src="https://picsum.photos/280/200?random=31" alt="Item 2" style="width: 100%; border-radius: 0.5rem; margin-bottom: 1rem;" />
+          <Text tag="h4" fontSize="1.125rem" fontWeight="semibold">Produit 2</Text>
+          <Text tag="p" fontSize="0.875rem" textColor="var(--color-muted)">Description du produit</Text>
+        </div>
+        <div style="text-align: center;">
+          <img src="https://picsum.photos/280/200?random=32" alt="Item 3" style="width: 100%; border-radius: 0.5rem; margin-bottom: 1rem;" />
+          <Text tag="h4" fontSize="1.125rem" fontWeight="semibold">Produit 3</Text>
+          <Text tag="p" fontSize="0.875rem" textColor="var(--color-muted)">Description du produit</Text>
+        </div>
+        <div style="text-align: center;">
+          <img src="https://picsum.photos/280/200?random=33" alt="Item 4" style="width: 100%; border-radius: 0.5rem; margin-bottom: 1rem;" />
+          <Text tag="h4" fontSize="1.125rem" fontWeight="semibold">Produit 4</Text>
+          <Text tag="p" fontSize="0.875rem" textColor="var(--color-muted)">Description du produit</Text>
+        </div>
+        <div style="text-align: center;">
+          <img src="https://picsum.photos/280/200?random=34" alt="Item 5" style="width: 100%; border-radius: 0.5rem; margin-bottom: 1rem;" />
+          <Text tag="h4" fontSize="1.125rem" fontWeight="semibold">Produit 5</Text>
+          <Text tag="p" fontSize="0.875rem" textColor="var(--color-muted)">Description du produit</Text>
+        </div>
+      </Slider>
+    </div>
 
-    <Section textAlign="center" backgroundColor="#fff" padding="1rem" shadow border shape="rounded" margin="0 0 2rem 0">
-      <Text tag="h3" border backgroundColor="yellow" iconLeft="mdi:view-carousel-outline" iconSize={20} textColor="#34495e" margin="0 0 1rem 0">
-        Carousel with multiple items by slide
+    <!-- Slider Accent -->
+    <div>
+      <Text tag="h3" fontSize="1.5rem" fontWeight="semibold" marginBottom="1rem">
+        Slider Accent Manuel
       </Text>
-      <Carousel idPrefix="carousel4" showDots={false} showScrollBar={false} showArrows={false} autoplay={false} showItemsBySlide={3}>
-        <img src="https://cataas.com/cat" alt="Slide 1" />
-        <img src="https://cataas.com/cat" alt="Slide 2" />
-        <img src="https://cataas.com/cat" alt="Slide 3" />
-        <img src="https://cataas.com/cat" alt="Slide 4" />
-      </Carousel>
-    </Section>
-  </Wrapper>
+      <Slider 
+        preset="accent"
+        gap="1.5rem"
+        itemMinWidth="250px"
+        showScrollbar={true}
+      >
+        <div style="padding: 1.5rem; text-align: center;">
+          <Text tag="h4" fontSize="1.25rem" fontWeight="bold" marginBottom="0.5rem">Feature 1</Text>
+          <Text tag="p" fontSize="0.875rem">Description de la fonctionnalité</Text>
+        </div>
+        <div style="padding: 1.5rem; text-align: center;">
+          <Text tag="h4" fontSize="1.25rem" fontWeight="bold" marginBottom="0.5rem">Feature 2</Text>
+          <Text tag="p" fontSize="0.875rem">Description de la fonctionnalité</Text>
+        </div>
+        <div style="padding: 1.5rem; text-align: center;">
+          <Text tag="h4" fontSize="1.25rem" fontWeight="bold" marginBottom="0.5rem">Feature 3</Text>
+          <Text tag="p" fontSize="0.875rem">Description de la fonctionnalité</Text>
+        </div>
+        <div style="padding: 1.5rem; text-align: center;">
+          <Text tag="h4" fontSize="1.25rem" fontWeight="bold" marginBottom="0.5rem">Feature 4</Text>
+          <Text tag="p" fontSize="0.875rem">Description de la fonctionnalité</Text>
+        </div>
+      </Slider>
+    </div>
+  </Wrapper2>
 </Section>
-</main>
+
+<!-- Responsive Grid Demo -->
+<Section preset="secondary">
+  <Wrapper2 cols={1} gap="2rem">
+    <div style="text-align: center;">
+      <Text tag="h2" fontSize="2rem" fontWeight="bold" marginBottom="1rem">
+        Grilles Responsives Parfaites
+      </Text>
+      <Text tag="p" marginBottom="2rem">
+        Adaptation automatique selon la taille d'écran avec breakpoints optimisés
+      </Text>
+    </div>
+
+    <Wrapper2 cols={6} colsTablet={3} colsMobile={2} gap="1rem">
+      {Array.from({length: 12}, (_, i) => (
+        <div style="background: white; padding: 1rem; border-radius: 0.5rem; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+          <Text tag="p" fontSize="0.875rem" fontWeight="semibold">Item {i + 1}</Text>
+        </div>
+      ))}
+    </Wrapper2>
+
+    <div style="text-align: center; margin-top: 2rem;">
+      <Text tag="p" fontSize="0.875rem" textColor="var(--color-muted)">
+        Desktop: 6 colonnes | Tablette: 3 colonnes | Mobile: 2 colonnes
+      </Text>
+    </div>
+  </Wrapper2>
+</Section>
+
+<!-- Performance Features -->
+<Section preset="default" textAlign="center">
+  <Wrapper2 cols={1} gap="3rem" maxWidth="800px" margin="0 auto">
+    <div>
+      <Text tag="h2" fontSize="2rem" fontWeight="bold" marginBottom="1rem">
+        Fonctionnalités Ultra-Performantes
+      </Text>
+    </div>
+
+    <Wrapper2 cols={2} gap="2rem">
+      <div style="text-align: left;">
+        <Text tag="h3" fontSize="1.25rem" fontWeight="semibold" marginBottom="1rem">
+          ⚡ Sans JavaScript
+        </Text>
+        <Text tag="p" fontSize="0.875rem" marginBottom="1rem">
+          La plupart des composants fonctionnent uniquement avec CSS pour une performance maximale.
+        </Text>
+      </div>
+
+      <div style="text-align: left;">
+        <Text tag="h3" fontSize="1.25rem" fontWeight="semibold" marginBottom="1rem">
+          📱 100% Responsive
+        </Text>
+        <Text tag="p" fontSize="0.875rem" marginBottom="1rem">
+          Adaptation parfaite sur tous les appareils avec des breakpoints optimisés.
+        </Text>
+      </div>
+
+      <div style="text-align: left;">
+        <Text tag="h3" fontSize="1.25rem" fontWeight="semibold" marginBottom="1rem">
+          🎨 Presets Élégants
+        </Text>
+        <Text tag="p" fontSize="0.875rem" marginBottom="1rem">
+          4 presets par composant pour une cohérence visuelle parfaite.
+        </Text>
+      </div>
+
+      <div style="text-align: left;">
+        <Text tag="h3" fontSize="1.25rem" fontWeight="semibold" marginBottom="1rem">
+          ♿ Accessible
+        </Text>
+        <Text tag="p" fontSize="0.875rem" marginBottom="1rem">
+          Navigation clavier, lecteurs d'écran et ARIA labels intégrés.
+        </Text>
+      </div>
+    </Wrapper2>
+  </Wrapper2>
+</Section>
+
 </Layout>

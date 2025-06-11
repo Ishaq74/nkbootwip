@@ -1,9 +1,13 @@
 ---
 interface Props {
-  tag?: 'div' | 'section' | 'article' | 'aside' | 'main';
-  display?: 'block' | 'flex' | 'grid';
-  cols?: 1 | 2 | 3 | 4 | 5 | 6;
+  tag?: 'div' | 'section' | 'article' | 'aside' | 'main' | 'header' | 'footer' | 'nav';
+  preset?: 'default' | 'primary' | 'secondary' | 'accent';
+  display?: 'block' | 'flex' | 'grid' | 'inline-flex' | 'inline-grid';
+  cols?: 1 | 2 | 3 | 4 | 5 | 6 | 'auto-fit' | 'auto-fill';
+  colsTablet?: 1 | 2 | 3 | 4 | 5 | 6;
+  colsMobile?: 1 | 2 | 3;
   autoFit?: boolean;
+  autoFill?: boolean;
   gridTemplateColumns?: string;
   gap?: string;
   rowGap?: string;
@@ -35,6 +39,8 @@ interface Props {
   backgroundColor?: string;
   width?: string;
   height?: string;
+  maxWidth?: string;
+  minHeight?: string;
   className?: string;
   style?: string;
   [key: string]: any;
@@ -42,9 +48,13 @@ interface Props {
 
 const {
   tag = 'div',
+  preset = 'default',
   display = 'block',
   cols,
+  colsTablet,
+  colsMobile,
   autoFit = false,
+  autoFill = false,
   gridTemplateColumns,
   gap = '1rem',
   rowGap,
@@ -68,60 +78,110 @@ const {
   marginBottom,
   marginLeft,
   marginRight,
-  border = false,
-  borderColor = 'border',
-  borderWidth = '1px',
-  borderStyle = 'solid',
-  textColor = 'text',
+  border,
+  borderColor,
+  borderWidth,
+  borderStyle,
+  textColor,
   backgroundColor,
   width,
   height,
+  maxWidth,
+  minHeight,
   className = '',
   style: inlineStyle = '',
   ...restProps
 } = Astro.props as Props;
 
-// On retire `cols` de restProps pour ne pas l'injecter dans le DOM
+// Remove cols from restProps to avoid DOM injection
 delete restProps.cols;
+delete restProps.colsTablet;
+delete restProps.colsMobile;
 
-const designTokens = [
-  'primary', 'secondary', 'accent', 'background', 'text', 'border', 'hover', 'focus',
-  'warning', 'info', 'disabled', 'muted', 'surface', 'shadow', 'shadow-dark',
-  'error', 'success',
-  'primary-light', 'secondary-light', 'accent-light',
-  'primary-dark', 'secondary-dark', 'accent-dark', 'background-dark', 'text-dark',
-  'border-dark', 'hover-dark', 'surface-dark', 'muted-dark'
-];
+// Presets configuration
+const presets = {
+  default: {
+    padding: padding || '0',
+    backgroundColor: backgroundColor || 'transparent',
+    textColor: textColor || 'inherit',
+    border: border ?? false,
+    borderColor: borderColor || 'var(--color-border)',
+    borderWidth: borderWidth || '1px',
+    borderStyle: borderStyle || 'solid',
+    gap: gap || '1rem'
+  },
+  primary: {
+    padding: padding || '1.5rem',
+    backgroundColor: backgroundColor || 'var(--color-primary-light)',
+    textColor: textColor || 'var(--color-text-dark)',
+    border: border ?? true,
+    borderColor: borderColor || 'var(--color-primary)',
+    borderWidth: borderWidth || '2px',
+    borderStyle: borderStyle || 'solid',
+    gap: gap || '1.5rem'
+  },
+  secondary: {
+    padding: padding || '1rem',
+    backgroundColor: backgroundColor || 'var(--color-secondary-light)',
+    textColor: textColor || 'var(--color-text)',
+    border: border ?? true,
+    borderColor: borderColor || 'var(--color-secondary)',
+    borderWidth: borderWidth || '1px',
+    borderStyle: borderStyle || 'dashed',
+    gap: gap || '1rem'
+  },
+  accent: {
+    padding: padding || '1.5rem',
+    backgroundColor: backgroundColor || 'var(--color-accent-light)',
+    textColor: textColor || 'var(--color-text)',
+    border: border ?? false,
+    borderColor: borderColor || 'var(--color-accent)',
+    borderWidth: borderWidth || '1px',
+    borderStyle: borderStyle || 'solid',
+    gap: gap || '1.25rem'
+  }
+};
 
-function token(val: string | undefined) {
-  return val && designTokens.includes(val) ? `var(--color-${val})` : val;
+const currentPreset = presets[preset] || presets.default;
+
+// Grid columns calculation
+function getGridColumns(colValue: any) {
+  if (typeof colValue === 'string') {
+    if (colValue === 'auto-fit') return 'repeat(auto-fit, minmax(min(100%, 250px), 1fr))';
+    if (colValue === 'auto-fill') return 'repeat(auto-fill, minmax(min(100%, 250px), 1fr))';
+    return colValue;
+  }
+  if (typeof colValue === 'number') {
+    return `repeat(${colValue}, 1fr)`;
+  }
+  return '1fr';
 }
 
-const cssTextColor = token(textColor);
-const cssBackgroundColor = token(backgroundColor);
-const cssBorderColor = token(borderColor);
-
 const classes = [
-  'wrapper',
+  'wrapper-component',
+  `preset-wrapper-${preset}`,
   display,
   cols ? `cols-${cols}` : '',
+  colsTablet ? `cols-tablet-${colsTablet}` : '',
+  colsMobile ? `cols-mobile-${colsMobile}` : '',
   autoFit ? 'auto-fit' : '',
+  autoFill ? 'auto-fill' : '',
   className
 ].filter(Boolean).join(' ');
 
 const style = [
-  cssTextColor ? `color: ${cssTextColor};` : '',
-  cssBackgroundColor ? `background-color: ${cssBackgroundColor};` : '',
-  border ? `border: ${borderWidth} ${borderStyle} ${cssBorderColor};` : '',
-  gap ? `gap: ${gap};` : '',
+  `display: ${display};`,
+  display === 'grid' && cols ? `grid-template-columns: ${getGridColumns(cols)};` : '',
+  display === 'grid' && gridTemplateColumns ? `grid-template-columns: ${gridTemplateColumns};` : '',
+  `gap: ${currentPreset.gap};`,
   rowGap ? `row-gap: ${rowGap};` : '',
   columnGap ? `column-gap: ${columnGap};` : '',
-  flexDirection ? `flex-direction: ${flexDirection};` : '',
-  flexWrap ? `flex-wrap: ${flexWrap};` : '',
-  alignItems ? `align-items: ${alignItems};` : '',
-  justifyContent ? `justify-content: ${justifyContent};` : '',
-  alignContent ? `align-content: ${alignContent};` : '',
-  padding ? `padding: ${padding};` : '',
+  display === 'flex' && flexDirection ? `flex-direction: ${flexDirection};` : '',
+  display === 'flex' && flexWrap ? `flex-wrap: ${flexWrap};` : '',
+  `align-items: ${alignItems};`,
+  `justify-content: ${justifyContent};`,
+  `align-content: ${alignContent};`,
+  `padding: ${currentPreset.padding};`,
   paddingBlock ? `padding-block: ${paddingBlock};` : '',
   paddingInline ? `padding-inline: ${paddingInline};` : '',
   paddingTop ? `padding-top: ${paddingTop};` : '',
@@ -135,8 +195,13 @@ const style = [
   marginBottom ? `margin-bottom: ${marginBottom};` : '',
   marginLeft ? `margin-left: ${marginLeft};` : '',
   marginRight ? `margin-right: ${marginRight};` : '',
+  `color: ${currentPreset.textColor};`,
+  `background-color: ${currentPreset.backgroundColor};`,
+  currentPreset.border ? `border: ${currentPreset.borderStyle} ${currentPreset.borderWidth} ${currentPreset.borderColor};` : '',
   width ? `width: ${width};` : '',
   height ? `height: ${height};` : '',
+  maxWidth ? `max-width: ${maxWidth};` : '',
+  minHeight ? `min-height: ${minHeight};` : '',
   inlineStyle
 ].filter(Boolean).join(' ');
 
@@ -146,3 +211,123 @@ const Tag = tag;
 <Tag class={classes} style={style} {...restProps}>
   <slot />
 </Tag>
+
+<style>
+  .wrapper-component {
+    box-sizing: border-box;
+    width: 100%;
+    transition: all 0.3s ease;
+  }
+
+  /* Grid responsive behavior */
+  .wrapper-component.grid {
+    display: grid;
+  }
+
+  .wrapper-component.flex {
+    display: flex;
+  }
+
+  /* Responsive grid columns */
+  @media (max-width: 1024px) {
+    .cols-6 { grid-template-columns: repeat(3, 1fr) !important; }
+    .cols-5 { grid-template-columns: repeat(3, 1fr) !important; }
+    .cols-4 { grid-template-columns: repeat(2, 1fr) !important; }
+  }
+
+  @media (max-width: 768px) {
+    .wrapper-component {
+      padding-left: max(1rem, env(safe-area-inset-left));
+      padding-right: max(1rem, env(safe-area-inset-right));
+    }
+
+    .cols-6, .cols-5, .cols-4 { grid-template-columns: repeat(2, 1fr) !important; }
+    .cols-3 { grid-template-columns: repeat(1, 1fr) !important; }
+    
+    /* Tablet specific columns */
+    .cols-tablet-1 { grid-template-columns: repeat(1, 1fr) !important; }
+    .cols-tablet-2 { grid-template-columns: repeat(2, 1fr) !important; }
+    .cols-tablet-3 { grid-template-columns: repeat(3, 1fr) !important; }
+    .cols-tablet-4 { grid-template-columns: repeat(2, 1fr) !important; }
+    .cols-tablet-5 { grid-template-columns: repeat(2, 1fr) !important; }
+    .cols-tablet-6 { grid-template-columns: repeat(3, 1fr) !important; }
+
+    .preset-wrapper-primary {
+      padding: 1rem;
+    }
+    
+    .preset-wrapper-secondary {
+      padding: 0.75rem;
+    }
+    
+    .preset-wrapper-accent {
+      padding: 1rem;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .wrapper-component {
+      padding-left: max(0.75rem, env(safe-area-inset-left));
+      padding-right: max(0.75rem, env(safe-area-inset-right));
+    }
+
+    .cols-6, .cols-5, .cols-4, .cols-3, .cols-2 { 
+      grid-template-columns: repeat(1, 1fr) !important; 
+    }
+    
+    /* Mobile specific columns */
+    .cols-mobile-1 { grid-template-columns: repeat(1, 1fr) !important; }
+    .cols-mobile-2 { grid-template-columns: repeat(2, 1fr) !important; }
+    .cols-mobile-3 { grid-template-columns: repeat(1, 1fr) !important; }
+
+    .preset-wrapper-primary {
+      padding: 0.75rem;
+    }
+    
+    .preset-wrapper-secondary {
+      padding: 0.5rem;
+    }
+    
+    .preset-wrapper-accent {
+      padding: 0.75rem;
+    }
+  }
+
+  /* Auto-fit and auto-fill */
+  .auto-fit {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr)) !important;
+  }
+
+  .auto-fill {
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 250px), 1fr)) !important;
+  }
+
+  @media (max-width: 768px) {
+    .auto-fit, .auto-fill {
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)) !important;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .auto-fit, .auto-fill {
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr)) !important;
+    }
+  }
+
+  /* Preset hover effects */
+  .preset-wrapper-primary:hover {
+    background-color: var(--color-primary);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  .preset-wrapper-secondary:hover {
+    background-color: var(--color-secondary);
+    border-style: solid;
+  }
+
+  .preset-wrapper-accent:hover {
+    background-color: var(--color-accent);
+    transform: translateY(-1px);
+  }
+</style>

@@ -1,8 +1,7 @@
 ---
-// src/components/Section.astro
-
 interface Props {
-  tag?: 'section' | 'div' | 'article' | 'aside' | 'nav' | 'header' | 'footer';
+  tag?: 'section' | 'div' | 'article' | 'aside' | 'nav' | 'header' | 'footer' | 'main';
+  preset?: 'default' | 'primary' | 'secondary' | 'accent';
   alignItems?: 'flex-start' | 'center' | 'flex-end' | 'baseline' | 'stretch';
   justifyContent?: 'flex-start' | 'center' | 'flex-end' | 'space-between' | 'space-around' | 'space-evenly';
   alignContent?: 'flex-start' | 'center' | 'flex-end' | 'space-between' | 'space-around' | 'space-evenly';
@@ -28,16 +27,19 @@ interface Props {
   backgroundColor?: string;
   textAlign?: 'left' | 'center' | 'right' | 'justify';
   width?: string;
+  minHeight?: string;
+  maxWidth?: string;
   className?: string;
   [key: string]: any;
 }
 
 const {
   tag = 'section',
+  preset = 'default',
   alignItems = 'stretch',
   justifyContent = 'flex-start',
   alignContent = 'stretch',
-  padding = "1rem",
+  padding,
   paddingBlock,
   paddingInline,
   paddingTop,
@@ -51,62 +53,79 @@ const {
   marginBottom,
   marginLeft,
   marginRight,
-  border = true,
-  borderColor = 'purple',
-  borderWidth = '4px',
-  borderStyle = 'dashed',
-  textColor = 'black',
+  border,
+  borderColor,
+  borderWidth,
+  borderStyle,
+  textColor,
   backgroundColor,
-  textAlign = 'center',
+  textAlign = 'left',
   width,
+  minHeight,
+  maxWidth,
   className = '',
   ...htmlAttributes
 } = Astro.props as Props;
 
-const validTags = ['section', 'div', 'article', 'aside', 'nav', 'header', 'footer'];
+const validTags = ['section', 'div', 'article', 'aside', 'nav', 'header', 'footer', 'main'];
 const SectionTag = validTags.includes(tag) ? tag : 'section';
 
-// Liste complète des tokens design (adaptée à votre liste)
-const designTokens = [
-  'primary', 'secondary', 'accent', 'background', 'text', 'border', 'hover', 'focus',
-  'warning', 'info', 'disabled', 'muted', 'surface', 'shadow', 'shadow-dark',
-  'error', 'success',
-  'primary-light', 'secondary-light', 'accent-light',
-  'primary-dark', 'secondary-dark', 'accent-dark', 'background-dark', 'text-dark',
-  'border-dark', 'hover-dark', 'surface-dark', 'muted-dark'
-];
+// Presets configuration
+const presets = {
+  default: {
+    padding: padding || '1rem',
+    backgroundColor: backgroundColor || 'transparent',
+    textColor: textColor || 'var(--color-text)',
+    border: border ?? false,
+    borderColor: borderColor || 'var(--color-border)',
+    borderWidth: borderWidth || '1px',
+    borderStyle: borderStyle || 'solid'
+  },
+  primary: {
+    padding: padding || '2rem 1rem',
+    backgroundColor: backgroundColor || 'var(--color-primary)',
+    textColor: textColor || 'var(--color-text-dark)',
+    border: border ?? true,
+    borderColor: borderColor || 'var(--color-primary-dark)',
+    borderWidth: borderWidth || '2px',
+    borderStyle: borderStyle || 'solid'
+  },
+  secondary: {
+    padding: padding || '1.5rem 1rem',
+    backgroundColor: backgroundColor || 'var(--color-secondary)',
+    textColor: textColor || 'var(--color-text)',
+    border: border ?? true,
+    borderColor: borderColor || 'var(--color-secondary-dark)',
+    borderWidth: borderWidth || '1px',
+    borderStyle: borderStyle || 'dashed'
+  },
+  accent: {
+    padding: padding || '2rem 1rem',
+    backgroundColor: backgroundColor || 'var(--color-accent)',
+    textColor: textColor || 'var(--color-text-dark)',
+    border: border ?? false,
+    borderColor: borderColor || 'var(--color-accent-dark)',
+    borderWidth: borderWidth || '1px',
+    borderStyle: borderStyle || 'solid'
+  }
+};
 
-// Fonction pour détecter si c’est un token design
-function isDesignToken(color: string) {
-  return designTokens.includes(color);
-}
+const currentPreset = presets[preset] || presets.default;
 
-// Gestion couleur textColor (idem, peut être token ou couleur directe)
-const cssTextColor = isDesignToken(textColor) ? `var(--color-${textColor})` : textColor;
-
-// Gestion backgroundColor, appliquer variable CSS si token sinon couleur directe
-const cssBackgroundColor = backgroundColor
-  ? (isDesignToken(backgroundColor) ? `var(--color-${backgroundColor})` : backgroundColor)
-  : undefined;
-
-// Construction classes d'alignement
 const classes = [
-  'section',
+  'section-component',
+  `preset-section-${preset}`,
   `align-items-${alignItems.replace(' ', '-')}`,
   `justify-content-${justifyContent.replace(' ', '-')}`,
   `align-content-${alignContent.replace(' ', '-')}`,
   `text-align-${textAlign}`,
-  border ? 'border' : '',
-  border ? `border-${borderStyle}` : '',
   className,
 ].filter(Boolean).join(' ');
 
-// Style inline pour padding/margin + couleurs + borderColor + borderWidth + width
 const style = [
-  padding ? `padding: ${padding};` : '',
+  `padding: ${paddingTop || currentPreset.padding};`,
   paddingBlock ? `padding-block: ${paddingBlock};` : '',
   paddingInline ? `padding-inline: ${paddingInline};` : '',
-  paddingTop ? `padding-top: ${paddingTop};` : '',
   paddingBottom ? `padding-bottom: ${paddingBottom};` : '',
   paddingLeft ? `padding-left: ${paddingLeft};` : '',
   paddingRight ? `padding-right: ${paddingRight};` : '',
@@ -117,14 +136,98 @@ const style = [
   marginBottom ? `margin-bottom: ${marginBottom};` : '',
   marginLeft ? `margin-left: ${marginLeft};` : '',
   marginRight ? `margin-right: ${marginRight};` : '',
-  cssBackgroundColor ? `background-color: ${cssBackgroundColor};` : '',
-  border ? `border: ${borderStyle} ${borderWidth} ${borderColor};` : '',
+  `background-color: ${currentPreset.backgroundColor};`,
+  `color: ${currentPreset.textColor};`,
+  currentPreset.border ? `border: ${currentPreset.borderStyle} ${currentPreset.borderWidth} ${currentPreset.borderColor};` : '',
   width ? `width: ${width};` : '',
-  `color: ${cssTextColor};`,
+  minHeight ? `min-height: ${minHeight};` : '',
+  maxWidth ? `max-width: ${maxWidth};` : '',
+  `text-align: ${textAlign};`,
 ].filter(Boolean).join(' ');
-
 ---
 
 <SectionTag class={classes} style={style} {...htmlAttributes}>
   <slot />
 </SectionTag>
+
+<style>
+  .section-component {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    transition: all 0.3s ease;
+  }
+
+  /* Responsive padding adjustments */
+  @media (max-width: 768px) {
+    .section-component {
+      padding-left: max(1rem, env(safe-area-inset-left));
+      padding-right: max(1rem, env(safe-area-inset-right));
+    }
+    
+    .preset-section-primary {
+      padding: 1.5rem 1rem;
+    }
+    
+    .preset-section-secondary {
+      padding: 1rem;
+    }
+    
+    .preset-section-accent {
+      padding: 1.5rem 1rem;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .section-component {
+      padding-left: max(0.75rem, env(safe-area-inset-left));
+      padding-right: max(0.75rem, env(safe-area-inset-right));
+    }
+    
+    .preset-section-primary {
+      padding: 1rem 0.75rem;
+    }
+    
+    .preset-section-secondary {
+      padding: 0.75rem;
+    }
+    
+    .preset-section-accent {
+      padding: 1rem 0.75rem;
+    }
+  }
+
+  /* Alignment utilities */
+  .align-items-flex-start { align-items: flex-start; }
+  .align-items-center { align-items: center; }
+  .align-items-flex-end { align-items: flex-end; }
+  .align-items-baseline { align-items: baseline; }
+  .align-items-stretch { align-items: stretch; }
+
+  .justify-content-flex-start { justify-content: flex-start; }
+  .justify-content-center { justify-content: center; }
+  .justify-content-flex-end { justify-content: flex-end; }
+  .justify-content-space-between { justify-content: space-between; }
+  .justify-content-space-around { justify-content: space-around; }
+  .justify-content-space-evenly { justify-content: space-evenly; }
+
+  .text-align-left { text-align: left; }
+  .text-align-center { text-align: center; }
+  .text-align-right { text-align: right; }
+  .text-align-justify { text-align: justify; }
+
+  /* Preset hover effects */
+  .preset-section-primary:hover {
+    background-color: var(--color-primary-light);
+    transform: translateY(-1px);
+  }
+
+  .preset-section-secondary:hover {
+    background-color: var(--color-secondary-light);
+  }
+
+  .preset-section-accent:hover {
+    background-color: var(--color-accent-light);
+    transform: translateY(-1px);
+  }
+</style>
