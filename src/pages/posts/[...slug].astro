@@ -1,0 +1,99 @@
+---
+export const prerender = false;
+import { getCollection, getEntry, render } from "astro:content";
+import Layout from "@layouts/BaseLayout.astro";
+import Section from "@atoms/Section.astro";
+import Wrapper2 from "@atoms/Wrapper2.astro";
+import Text from "@atoms/Text.astro";
+import { Icon } from 'astro-icon/components';
+import QueryLoop from "@organisms/QueryLoop.astro";
+import FormattedDate from "@components/FormattedDate.astro";
+
+const { slug } = Astro.params;
+const posts = await getCollection("posts");
+const post = posts.find(p => p.slug === slug || p.data.slug === slug);
+if (!post) return Astro.redirect("/404");
+
+const { data: postdata, body } = post;
+const renderedContent = await render(post);
+
+const authorData = postdata.author ? await getEntry("profiles", postdata.author.id || postdata.author) : null;
+const categoryData = postdata.category ? await getEntry("postcategories", postdata.category.id || postdata.category) : null;
+
+const pageTitle = postdata.title;
+const pageDescription = postdata.summary || "";
+const pageKeywords = postdata.tags?.join(", ") || "";
+const pageOgImage = postdata.coverImage || "/images/default-cover.jpg";
+const pageLang = "fr";
+const pageRobots = "index, follow";
+---
+
+<Layout
+  title={pageTitle}
+  description={pageDescription}
+  keywords={pageKeywords}
+  ogImage={pageOgImage}
+  lang={pageLang}
+  robots={pageRobots}
+>
+  <Section padding="2rem 0">
+    <Wrapper2 direction="column" gap="2rem">
+      {postdata.coverImage && (
+        <div class="hero-image">
+          <img src={postdata.coverImage} alt={postdata.title} style="width: 100%; height: auto; border-radius: 0.5rem; box-shadow: var(--shadow-md);" />
+        </div>
+      )}
+
+      <div class="post-meta" style="display: flex; justify-content: space-between; flex-wrap: wrap; font-size: 0.875rem; color: var(--gray-600);">
+        <div style="display: flex; gap: 1rem; align-items: center;">
+          {postdata.pubDate && (
+            <span style="display: flex; align-items: center; gap: 0.25rem;">
+              <Icon name="mdi:calendar" size={18} /> <FormattedDate date={postdata.pubDate} />
+            </span>
+          )}
+          {postdata.updatedDate && postdata.updatedDate !== postdata.pubDate && (
+            <span style="display: flex; align-items: center; gap: 0.25rem;">
+              <Icon name="mdi:update" size={18} /> Mise à jour le <FormattedDate date={postdata.updatedDate} />
+            </span>
+          )}
+        </div>
+
+        {categoryData && (
+          <span style="display: inline-flex; gap: 0.25rem; align-items: center; background: var(--gray-100); padding: 0.25rem 0.75rem; border-radius: 999px;">
+            <Icon name="mdi:tag" size={16} /> {categoryData.data.title}
+          </span>
+        )}
+      </div>
+
+      <Text tag="h1" fontSize="2rem" fontWeight="bold" style="margin-top: 0.5rem;">
+        {postdata.title}
+      </Text>
+
+      {authorData && (
+        <div style="display: flex; align-items: center; gap: 0.5rem; color: var(--gray-700);">
+          <Icon name="mdi:account" size={20} /> <span>Par {authorData.data.name}</span>
+        </div>
+      )}
+
+      <div class="prose" style="margin-top: 2rem;">
+        {renderedContent.Content}
+      </div>
+
+      {postdata.RelatedContent && (
+        <>
+          <Text tag="h2" fontSize="1.5rem" fontWeight="semibold" style="margin-top: 3rem;">
+            <Icon name="mdi:book-open-page-variant" size={22} style="margin-right: 0.5rem;" /> Articles similaires
+          </Text>
+          <QueryLoop
+            collection="posts"
+            limit={3}
+            relatedContent
+            relatedTo={{ collection: 'posts', id: post.id }}
+            references={["author", "category"]}
+            columns={3}
+          />
+        </>
+      )}
+    </Wrapper2>
+  </Section>
+</Layout>

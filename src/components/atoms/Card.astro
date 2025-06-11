@@ -1,0 +1,32 @@
+---
+import { twMerge } from 'tailwind-merge';
+
+export interface Props {
+  padding?: string;
+  shadow?: boolean;
+  borderRadius?: string;
+  height?: string;
+  className?: string;
+  [key: string]: any;
+}
+
+const {
+  padding = 'p-4',
+  shadow = true,
+  borderRadius = 'rounded-lg',
+  height = 'h-full',
+  className,
+  ...htmlAttributes
+} = Astro.props as Props;
+
+const mergedClassList = twMerge(
+  padding,
+  height,
+  shadow && 'shadow-md',
+  borderRadius,
+  className
+);
+---
+<div {...htmlAttributes} class={mergedClassList} >
+  <slot />
+</div>
