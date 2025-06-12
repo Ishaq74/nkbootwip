@@ -3,7 +3,7 @@
 import { Icon } from 'astro-icon/components';
 
 interface Props {
-  tag?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'p' | 'span';
+  tag?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'p' | 'span' | 'strong';
   align?: 'center' | 'left' | 'right';
   iconLeft?: string;
   iconRight?: string;
@@ -78,7 +78,7 @@ const justifyContentClass = {
 const cssColor = `var(--color-${textColor})`;
 
 const style = [
-  `display: flex;`,
+  `display: block;`,
   `align-items: center;`,
   `color: ${cssColor};`,
   padding ? `padding: ${padding};` : '',

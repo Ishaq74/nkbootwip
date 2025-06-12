@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@iconify-json/mdi": "^1.2.3",
+    "@supabase/supabase-js": "^2.50.0",
     "astro": "^5.8.0",
     "astro-font": "^1.1.0",
     "astro-icon": "^1.1.5"

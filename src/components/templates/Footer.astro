@@ -1,18 +1,15 @@
 ---
-import { getCollection } from "astro:content";
 import Section from "@atoms/Section.astro";
 import Wrapper from "@atoms/Wrapper2.astro";
 import Text from "@atoms/Text.astro";
 import List from "@atoms/List.astro";
 
-const org = (await getCollection("organizations")).find(entry => entry.slug === "nkboot");
-if (!org) throw new Error("Organisation nkboot non trouvée");
-const data = org.data;
+// --- ON REÇOIT LA PROP 'org' DE MANIÈRE STANDARD ---
+const { org = {} } = Astro.props;
 
 const config = {
   showSocial: true,
   showNavPrimary: true,
-  showNavSecondary: true,
   showContactInfo: true,
   showLegalInfo: true,
   showAddress: true,
@@ -24,26 +21,19 @@ const config = {
 <Section as="footer" backgroundColor="accent">
   <Wrapper display="grid" cols={5}>
 
-    {config.showSocial && data.socialMedia && (
+    {/* ON UTILISE 'org' PARTOUT MAINTENANT */}
+    
+    {config.showSocial && Array.isArray(org.sameAs) && org.sameAs.length > 0 && (
       <div>
         <Text tag="h4" fontWeight="bold">Réseaux Sociaux</Text>
-        <List
-          items={data.socialMedia.map(s => `${s.name} → ${s.url}`)}
-        />
+        <List items={org.sameAs.map(url => `→ ${url}`)} />
       </div>
     )}
 
-    {config.showNavPrimary && data.navLinks && (
+    {config.showNavPrimary && org.brand && Array.isArray(org.brand.navlinks) && org.brand.navlinks.length > 0 && (
       <div>
         <Text tag="h4" fontWeight="bold">Navigation principale</Text>
-        <List items={data.navLinks.map(link => `${link.name} → ${link.url}`)} />
-      </div>
-    )}
-
-    {config.showNavSecondary && data.navLinksSecondary && (
-      <div>
-        <Text tag="h4" fontWeight="bold">Navigation secondaire</Text>
-        <List items={data.navLinksSecondary.map(link => `${link.name} → ${link.url}`)} />
+        <List items={org.brand.navlinks.map(link => (link?.name && link?.url) ? `${link.name} → ${link.url}` : null).filter(Boolean)} />
       </div>
     )}
 
@@ -52,19 +42,21 @@ const config = {
         <Text tag="h4" fontWeight="bold">Contact</Text>
         <List
           items={[
-            data.email && `Email : ${data.email}`,
-            data.telephone && `Téléphone : ${data.telephone}`,
-            data.faxNumber && `Fax : ${data.faxNumber}`,
+            org.email && `Email : ${org.email}`,
+            org.telephone && `Téléphone : ${org.telephone}`,
+            org.faxNumber && `Fax : ${org.faxNumber}`,
+            org.contactEmail && `Email secondaire : ${org.contactEmail}`,
+            org.contactTelephone && `Téléphone secondaire : ${org.contactTelephone}`,
           ].filter(Boolean)}
         />
       </div>
     )}
 
-    {config.showAddress && data.address && (
+    {config.showAddress && org.streetAddress && org.postalCode && org.addressLocality && org.addressCountry && (
       <div>
         <Text tag="h4" fontWeight="bold">Adresse</Text>
         <Text tag="p">
-          {data.address.streetAddress}, {data.address.postalCode} {data.address.addressLocality}, {data.address.addressCountry}
+          {org.streetAddress}, {org.postalCode} {org.addressLocality}, {org.addressCountry}
         </Text>
       </div>
     )}
@@ -74,13 +66,16 @@ const config = {
         <Text tag="h4" fontWeight="bold">Mentions légales</Text>
         <List
           items={[
-            data.legalName && `Raison sociale : ${data.legalName}`,
-            data.siret && `SIRET : ${data.siret}`,
-            data.vatID && `TVA : ${data.vatID}`,
-            data.nafCode && `Code NAF : ${data.nafCode}`,
-            data.foundingDate && `Créé le : ${data.foundingDate}`,
-            data.foundingLocation && `Lieu : ${data.foundingLocation}`,
-            data.founder && `Fondateur : ${Array.isArray(data.founder) ? data.founder.join(", ") : data.founder}`,
+            org.legalName && `Raison sociale : ${org.legalName}`,
+            org.taxID && `Tax ID : ${org.taxID}`,
+            org.vatID && `TVA : ${org.vatID}`,
+            org.isicV4 && `Code ISIC : ${org.isicV4}`,
+            org.naics && `Code NAICS : ${org.naics}`,
+            org.leiCode && `LEI : ${org.leiCode}`,
+            org.duns && `DUNS : ${org.duns}`,
+            org.foundingDate && `Créé le : ${new Date(org.foundingDate).toLocaleDateString()}`,
+            org.foundingLocation && `Lieu : ${org.foundingLocation}`,
+            org.founder && (Array.isArray(org.founder) ? org.founder.length > 0 : org.founder) && `Fondateur : ${Array.isArray(org.founder) ? org.founder.join(", ") : org.founder}`,
           ].filter(Boolean)}
         />
       </div>
@@ -88,10 +83,10 @@ const config = {
 
   </Wrapper>
 
-  {config.showCopyright && (
+  {config.showCopyright && (org.legalName || org.name) && (
     <Wrapper display="flex" justifyContent="center">
       <Text tag="p" fontSize="13px" textAlign="center">
-        {data.footerText}
+        © {new Date().getFullYear()} {org.legalName || org.name}. Tous droits réservés.
       </Text>
     </Wrapper>
   )}

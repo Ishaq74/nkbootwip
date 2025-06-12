@@ -65,6 +65,11 @@ const productImages = [
 ---
 
 <Layout title="Design System Complet" description="Une démonstration exhaustive de nos composants, presets et tokens de design.">
+  {(org) => {
+
+    // On retourne tout le HTML de la page
+    return (
+      <>
 
 <!-- Hero Section: Présentation générale du Design System -->
 <Section id="hero" tag="header" preset="primary" display="flex" minHeight="60vh" justifyContent="center" alignItems="center">
@@ -907,5 +912,7 @@ const productImages = [
     </Wrapper>
   </Wrapper>
 </Section>
-
+     </>
+    )
+  }}
 </Layout>

@@ -576,7 +576,7 @@ table td:last-child {
 /* === MARGIN UTILITIES === */
 /* Global */
 .m-0 { margin: var(--spacing-0) !important; }
-.m-auto { margin: auto !important; } /
+.m-auto { margin: auto !important; }
 .m-px { margin: var(--spacing-px) !important; }
 .m-0_5 { margin: var(--spacing-0_5) !important; }
 .m-1 { margin: var(--spacing-1) !important; }
@@ -710,4 +710,5 @@ table td:last-child {
   .h-max { height: var(--size-max-content) !important; }
   .h-fit { height: var(--size-fit-content) !important; }
 
-  .max-w-full { max-width: var(--size-full) !important; }
+    .max-w-full { max-width: var(--size-full) !important; }
+  }

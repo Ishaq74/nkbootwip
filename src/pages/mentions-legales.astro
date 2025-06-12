@@ -1,0 +1,552 @@
+---
+import Layout from "@layouts/BaseLayout.astro";
+import Section from "@atoms/Section.astro";
+import Wrapper2 from "@atoms/Wrapper2.astro";
+import Text from "@atoms/Text.astro";
+import List from "@atoms/List.astro";
+import { Image } from "astro:assets";
+import Details from "@atoms/Details.astro";
+
+// --- ON RÉCUPÈRE LES DONNÉES GLOBALES DEPUIS LE MIDDLEWARE ---
+const { org } = Astro.locals;
+
+// --- ON PEUT MAINTENANT FAIRE NOS CALCULS ICI ---
+const fullAddress = [org?.streetAddress, org?.postalCode, org?.addressLocality, org?.addressCountry]
+  .filter(Boolean)
+  .join(', ');
+const defaultAddress = "Adresse complète de l'entreprise";
+const siteUrl = org?.url ?? Astro.site?.href ?? "URL du site";
+---
+
+<!-- ON UTILISE LE LAYOUT NORMALEMENT, SANS FONCTION SPÉCIALE -->
+<Layout title="Mentions légales" description="Mentions légales et informations juridiques du site.">
+  <Section id="legal-1720">
+    <Wrapper2>
+      <Section tag="div" class="cs-flex-group">
+        <Section tag="div" class="cs-button-group">
+          <Section tag="div" class="cs-flex">
+            <a href="#mentions-legales" class="cs-option cs-active" data-filter="one">
+              <Image class="cs-icon" src="https://csimg.nyc3.cdn.digitaloceanspaces.com/Images/Graphics/plus.svg" alt="plus" width="12" height="12" loading="lazy" decoding="async" />
+              <Text tag="span">Mentions légales</Text>
+            </a>
+            <a href="#politique-confidentialite" class="cs-option" data-filter="two">
+              <Image class="cs-icon" src="https://csimg.nyc3.cdn.digitaloceanspaces.com/Images/Graphics/plus.svg" alt="plus" width="12" height="12" loading="lazy" decoding="async" />
+              <Text tag="span">Politique de Confidentialité</Text>
+            </a>
+            <a href="#cgv" class="cs-option" data-filter="three">
+              <Image class="cs-icon" src="https://csimg.nyc3.cdn.digitaloceanspaces.com/Images/Graphics/plus.svg" alt="plus" width="12" height="12" loading="lazy" decoding="async" />
+              <Text tag="span">Conditions Générales de Vente</Text>
+            </a>
+          </Section>
+          <picture class="cs-picture">
+            <source media="(max-width: 600px)" srcset="https://csimg.nyc3.cdn.digitaloceanspaces.com/Images/People/people2.jpg" />
+            <source media="(min-width: 601px)" srcset="https://csimg.nyc3.cdn.digitaloceanspaces.com/Images/People/people2.jpg" />
+            <Image src="https://csimg.nyc3.cdn.digitaloceanspaces.com/Images/People/people2.jpg" alt="people" width="353" height="493" style="width:100%;max-width:350px;" loading="lazy" decoding="async" />
+          </picture>
+        </Section>
+
+        <Section tag="div" class="cs-wrapper">
+          <!-- SECTION 1: MENTIONS LÉGALES -->
+          <List id="mentions-legales" class="cs-faq-group" data-category="one" showMarkers={false} spacing="0.5rem">
+            <Text tag="h2" class="cs-title">Mentions Légales</Text>
+            <Text tag="p" class="cs-text">
+              Conformément aux dispositions de la loi n° 2004-575 du 21 juin 2004 pour la confiance en l’économie numérique, nous tenons à vous informer de l’identité des différents intervenants impliqués dans la réalisation et le suivi du site "<a href={siteUrl}>{siteUrl}</a>".
+            </Text>
+            
+            <li class="cs-faq-item">
+              <Details class="cs-details" summary="Identité du Site" backgroundColor="#f7f7f7" padding="1rem 1.5rem" border={true} borderColor="#e0e0e0" borderWidth="1px" summaryFontSize="1.25rem" summaryFontWeight="700">
+                <Text tag="p" class="cs-item-p">
+                  Dénomination sociale : <strong>{org?.legalname ?? "Nom légal de l'entreprise"}</strong><br />
+                  Forme juridique : <strong>{org?.forme_juridique ?? "Forme juridique"}</strong><br />
+                  Capital social : <strong>{org?.capital_social ?? "Capital social"}</strong><br />
+                  Numéro SIRET : <strong>{org?.taxID ?? "Numéro SIRET"}</strong><br />
+                  Numéro de TVA intracommunautaire : <strong>{org?.vatID ?? "Numéro de TVA"}</strong><br />
+                  Description : <Text tag="span">{org?.description ?? "Description de l'activité"}</Text>
+                </Text>
+              </Details>
+            </li>
+            <li class="cs-faq-item">
+              <Details class="cs-details" summary="Hébergement" backgroundColor="#f7f7f7" padding="1rem 1.5rem" border={true} borderColor="#e0e0e0" borderWidth="1px" summaryFontSize="1.25rem" summaryFontWeight="700">
+                <Text tag="p" class="cs-item-p">
+                  Le Site est hébergé par la société <strong>{org?.hebergeur_site ?? "Nom de l'hébergeur"}</strong>.
+                </Text>
+              </Details>
+            </li>
+            <li class="cs-faq-item">
+              <Details class="cs-details" summary="Directeur de publication" backgroundColor="#f7f7f7" padding="1rem 1.5rem" border={true} borderColor="#e0e0e0" borderWidth="1px" summaryFontSize="1.25rem" summaryFontWeight="700">
+                <Text tag="p" class="cs-item-p">
+                  Le Directeur de la publication du Site est <strong>{org?.directeur_publication ?? "Nom du directeur de publication"}</strong>.
+                </Text>
+              </Details>
+            </li>
+            <li class="cs-faq-item">
+              <Details class="cs-details" summary="Nous contacter" backgroundColor="#f7f7f7" padding="1rem 1.5rem" border={true} borderColor="#e0e0e0" borderWidth="1px" summaryFontSize="1.25rem" summaryFontWeight="700">
+                <Text tag="p" class="cs-item-p">
+                  Par téléphone : <strong>{org?.telephone ?? "Numéro de téléphone"}</strong><br />
+                  Par email : <strong>{org?.email ?? "Adresse e-mail"}</strong><br />
+                  Par courrier : <strong>{fullAddress || defaultAddress}</strong>
+                </Text>
+              </Details>
+            </li>
+            <li class="cs-faq-item">
+              <Details class="cs-details" summary="Données personnelles" backgroundColor="#f7f7f7" padding="1rem 1.5rem" border={true} borderColor="#e0e0e0" borderWidth="1px" summaryFontSize="1.25rem" summaryFontWeight="700">
+                <Text tag="p" class="cs-item-p">
+                  Le traitement de vos données à caractère personnel est régi par notre Politique de Confidentialité, disponible dans la section « Politique de Confidentialité », conformément au Règlement Général sur la Protection des Données 2016/679 du 27 avril 2016 (« RGPD »).
+                </Text>
+              </Details>
+            </li>
+            <li class="cs-faq-item">
+              <Details class="cs-details" summary="Litiges" backgroundColor="#f7f7f7" padding="1rem 1.5rem" border={true} borderColor="#e0e0e0" borderWidth="1px" summaryFontSize="1.25rem" summaryFontWeight="700">
+                <Text tag="p" class="cs-item-p">
+                  En cas de litige entre le professionnel et le consommateur, ceux-ci s’efforceront de trouver une solution amiable.
+                  À défaut d’accord amiable, le consommateur a la possibilité de saisir gratuitement le médiateur de la consommation dont relève le professionnel, à savoir <strong>{org?.mediateur_consommation ?? "Nom et coordonnées du médiateur"}</strong>.
+                </Text>
+              </Details>
+            </li>
+          </List>
+
+          <!-- SECTION 2: POLITIQUE DE CONFIDENTIALITÉ -->
+          <List id="politique-confidentialite" class="cs-faq-group cs-hidden" data-category="two" showMarkers={false} spacing="0.5rem">
+            <Text tag="h2" class="cs-title">Politique de Confidentialité</Text>
+            
+            <li class="cs-faq-item">
+              <Details class="cs-details" summary="Informations sur l'entreprise" backgroundColor="#f7f7f7" padding="1rem 1.5rem" border={true} borderColor="#e0e0e0" borderWidth="1px" summaryFontSize="1.25rem" summaryFontWeight="700">
+                <Text tag="p" class="cs-item-p">
+                  <strong>{org?.legalName ?? "Nom légal de l'entreprise"}</strong>, située au <strong>{fullAddress || defaultAddress}</strong>, est responsable du traitement des données personnelles collectées sur ce site.
+                </Text>
+              </Details>
+            </li>
+            <li class="cs-faq-item">
+              <Details class="cs-details" summary="Collecte des données personnelles" backgroundColor="#f7f7f7" padding="1rem 1.5rem" border={true} borderColor="#e0e0e0" borderWidth="1px" summaryFontSize="1.25rem" summaryFontWeight="700">
+                <Text tag="p" class="cs-item-p">
+                  Nous collectons des données personnelles telles que le nom, l'adresse e-mail, l'adresse postale, etc., uniquement dans le cadre de la fourniture de nos services et produits, et avec le consentement explicite de l'utilisateur.
+                </Text>
+              </Details>
+            </li>
+            <li class="cs-faq-item">
+              <Details class="cs-details" summary="But de la collecte des données" backgroundColor="#f7f7f7" padding="1rem 1.5rem" border={true} borderColor="#e0e0e0" borderWidth="1px" summaryFontSize="1.25rem" summaryFontWeight="700">
+                <Text tag="p" class="cs-item-p">
+                  Les données personnelles collectées sont utilisées dans le but de fournir nos services, de traiter les commandes, d'améliorer notre site et nos produits, et de communiquer avec nos utilisateurs.
+                </Text>
+              </Details>
+            </li>
+            <li class="cs-faq-item">
+              <Details class="cs-details" summary="Consentement" backgroundColor="#f7f7f7" padding="1rem 1.5rem" border={true} borderColor="#e0e0e0" borderWidth="1px" summaryFontSize="1.25rem" summaryFontWeight="700">
+                <Text tag="p" class="cs-item-p">
+                  En utilisant ce site, vous consentez à la collecte et au traitement de vos données personnelles conformément à notre politique de confidentialité.
+                </Text>
+              </Details>
+            </li>
+            <li class="cs-faq-item">
+              <Details class="cs-details" summary="Utilisation des données" backgroundColor="#f7f7f7" padding="1rem 1.5rem" border={true} borderColor="#e0e0e0" borderWidth="1px" summaryFontSize="1.25rem" summaryFontWeight="700">
+                <Text tag="p" class="cs-item-p">
+                  Les données personnelles sont utilisées uniquement aux fins spécifiées lors de la collecte et sont protégées conformément aux lois sur la protection des données en vigueur.
+                </Text>
+              </Details>
+            </li>
+            <li class="cs-faq-item">
+              <Details class="cs-details" summary="Partage des données" backgroundColor="#f7f7f7" padding="1rem 1.5rem" border={true} borderColor="#e0e0e0" borderWidth="1px" summaryFontSize="1.25rem" summaryFontWeight="700">
+                <Text tag="p" class="cs-item-p">
+                  Nous ne partageons pas vos données personnelles avec des tiers, sauf dans les cas prévus par la loi ou avec votre consentement explicite.
+                </Text>
+              </Details>
+            </li>
+            <li class="cs-faq-item">
+              <Details class="cs-details" summary="Droits des utilisateurs" backgroundColor="#f7f7f7" padding="1rem 1.5rem" border={true} borderColor="#e0e0e0" borderWidth="1px" summaryFontSize="1.25rem" summaryFontWeight="700">
+                <Text tag="p" class="cs-item-p">
+                  Vous avez le droit d'accéder à vos données personnelles, de les corriger, de les supprimer et de vous opposer à leur traitement. Pour exercer ces droits, veuillez nous contacter à <strong>{org?.email ?? "Adresse e-mail de contact"}</strong>.
+                </Text>
+              </Details>
+            </li>
+            <li class="cs-faq-item">
+              <Details class="cs-details" summary="Cookies et suivi en ligne" backgroundColor="#f7f7f7" padding="1rem 1.5rem" border={true} borderColor="#e0e0e0" borderWidth="1px" summaryFontSize="1.25rem" summaryFontWeight="700">
+                <Text tag="p" class="cs-item-p">
+                  Ce site utilise des cookies et d'autres technologies de suivi pour améliorer votre expérience de navigation et pour collecter des informations sur la manière dont vous utilisez le site.
+                </Text>
+              </Details>
+            </li>
+            <li class="cs-faq-item">
+              <Details class="cs-details" summary="Mises à jour de la politique de confidentialité" backgroundColor="#f7f7f7" padding="1rem 1.5rem" border={true} borderColor="#e0e0e0" borderWidth="1px" summaryFontSize="1.25rem" summaryFontWeight="700">
+                <Text tag="p" class="cs-item-p">
+                  Cette politique de confidentialité peut être mise à jour périodiquement pour refléter les changements dans nos pratiques en matière de confidentialité. Toute modification importante sera clairement indiquée sur cette page.
+                </Text>
+              </Details>
+            </li>
+            <li class="cs-faq-item">
+              <Details class="cs-details" summary="Coordonnées de contact" backgroundColor="#f7f7f7" padding="1rem 1.5rem" border={true} borderColor="#e0e0e0" borderWidth="1px" summaryFontSize="1.25rem" summaryFontWeight="700">
+                <Text tag="p" class="cs-item-p">
+                  Si vous avez des questions ou des préoccupations concernant notre politique de confidentialité, veuillez nous contacter à <strong>{org?.email ?? "Adresse e-mail de contact"}</strong> ou par courrier à <strong>{fullAddress || defaultAddress}</strong>.
+                </Text>
+              </Details>
+            </li>
+          </List>
+
+          <!-- SECTION 3: CGV -->
+          <List id="cgv" class="cs-faq-group cs-hidden" data-category="three" showMarkers={false} spacing="0.5rem">
+            <Text tag="h2" class="cs-title">Conditions Générales de Vente</Text>
+            
+            <li class="cs-faq-item">
+              <Details class="cs-details" summary="Objet" backgroundColor="#f7f7f7" padding="1rem 1.5rem" border={true} borderColor="#e0e0e0" borderWidth="1px" summaryFontSize="1.25rem" summaryFontWeight="700">
+                <Text tag="p" class="cs-item-p">
+                  Les présentes CGV régissent la vente des prestations de maquillage et des formations professionnelles proposées par <strong>{org?.name ?? "L'Entreprise"}</strong> (« l’Entreprise ») à ses clientes et stagiaires (« le Client »).
+                </Text>
+              </Details>
+            </li>
+            <li class="cs-faq-item">
+              <Details class="cs-details" summary="Acceptation des conditions" backgroundColor="#f7f7f7" padding="1rem 1.5rem" border={true} borderColor="#e0e0e0" borderWidth="1px" summaryFontSize="1.25rem" summaryFontWeight="700">
+                <Text tag="p" class="cs-item-p">
+                  Toute réservation ou inscription implique l’adhésion sans réserve du Client aux présentes CGV.
+                </Text>
+              </Details>
+            </li>
+            <li class="cs-faq-item">
+              <Details class="cs-details" summary="Services proposés" backgroundColor="#f7f7f7" padding="1rem 1.5rem" border={true} borderColor="#e0e0e0" borderWidth="1px" summaryFontSize="1.25rem" summaryFontWeight="700">
+                <Text tag="p" class="cs-item-p" set:html={`• Packs mariage : essai, maquillage Jour J, suivi retouches.<br />
+                  • Maquillage invité·e & shooting.<br />
+                  • Formations Débutant 5 j / Perfectionnement 3 j, remise MAC ‑40 %.<br />
+                  • Déplacement ≤ 150 km d’Annecy, kit retouche sur demande.`}></Text>
+              </Details>
+            </li>
+            <li class="cs-faq-item">
+              <Details class="cs-details" summary="Devis & réservation" backgroundColor="#f7f7f7" padding="1rem 1.5rem" border={true} borderColor="#e0e0e0" borderWidth="1px" summaryFontSize="1.25rem" summaryFontWeight="700">
+                <Text tag="p" class="cs-item-p">
+                  Devis valable 30 jours. Réservation confirmée après devis signé et acompte : 30 % (prestations) ou 50 % (formations).
+                </Text>
+              </Details>
+            </li>
+            <li class="cs-faq-item">
+              <Details class="cs-details" summary="Tarifs" backgroundColor="#f7f7f7" padding="1rem 1.5rem" border={true} borderColor="#e0e0e0" borderWidth="1px" summaryFontSize="1.25rem" summaryFontWeight="700">
+                <Text tag="p" class="cs-item-p">
+                  Prix indiqués en euros TTC sur le devis et le site ; frais kilométriques 0,80 €/km au‑delà de 15 km.
+                </Text>
+              </Details>
+            </li>
+            <li class="cs-faq-item">
+              <Details class="cs-details" summary="Paiement" backgroundColor="#f7f7f7" padding="1rem 1.5rem" border={true} borderColor="#e0e0e0" borderWidth="1px" summaryFontSize="1.25rem" summaryFontWeight="700">
+                <Text tag="p" class="cs-item-p">
+                  Acompte par virement ou PayPal. Solde : Jour J (prestations) ou 48 h avant début (formations). Paiement 3 × sans frais possible pour les formations.
+                </Text>
+              </Details>
+            </li>
+            <li class="cs-faq-item">
+              <Details class="cs-details" summary="Délais & horaires" backgroundColor="#f7f7f7" padding="1rem 1.5rem" border={true} borderColor="#e0e0e0" borderWidth="1px" summaryFontSize="1.25rem" summaryFontWeight="700">
+                <Text tag="p" class="cs-item-p">
+                  Horaires confirmés J‑7. Retard client > 20 min : durée réduite sans remboursement.
+                </Text>
+              </Details>
+            </li>
+            <li class="cs-faq-item">
+              <Details class="cs-details" summary="Obligations du Client" backgroundColor="#f7f7f7" padding="1rem 1.5rem" border={true} borderColor="#e0e0e0" borderWidth="1px" summaryFontSize="1.25rem" summaryFontWeight="700">
+                <Text tag="p" class="cs-item-p">
+                  Fournir textes, images, accès et, pour les formations, pinceaux personnels. Le Client garantit la légalité de son contenu.
+                </Text>
+              </Details>
+            </li>
+            <li class="cs-faq-item">
+              <Details class="cs-details" summary="Propriété intellectuelle" backgroundColor="#f7f7f7" padding="1rem 1.5rem" border={true} borderColor="#e0e0e0" borderWidth="1px" summaryFontSize="1.25rem" summaryFontWeight="700">
+                <Text tag="p" class="cs-item-p">
+                  Face‑charts et supports pédagogiques restent la propriété de l’Entreprise. Toute reproduction nécessite un accord écrit.
+                </Text>
+              </Details>
+            </li>
+            <li class="cs-faq-item">
+              <Details class="cs-details" summary="Garantie & retouches" backgroundColor="#f7f7f7" padding="1rem 1.5rem" border={true} borderColor="#e0e0e0" borderWidth="1px" summaryFontSize="1.25rem" summaryFontWeight="700">
+                <Text tag="p" class="cs-item-p">
+                  Tenue maquillage garantie 12 h. Retouches post‑cérémonie incluses uniquement dans le Pack Gold.
+                </Text>
+              </Details>
+            </li>
+            <li class="cs-faq-item">
+              <Details class="cs-details" summary="Confidentialité" backgroundColor="#f7f7f7" padding="1rem 1.5rem" border={true} borderColor="#e0e0e0" borderWidth="1px" summaryFontSize="1.25rem" summaryFontWeight="700">
+                <Text tag="p" class="cs-item-p">
+                  Données personnelles et photos utilisées uniquement pour la prestation ou, avec accord, pour le portfolio.
+                </Text>
+              </Details>
+            </li>
+            <li class="cs-faq-item">
+              <Details class="cs-details" summary="Annulation / Résiliation" backgroundColor="#f7f7f7" padding="1rem 1.5rem" border={true} borderColor="#e0e0e0" borderWidth="1px" summaryFontSize="1.25rem" summaryFontWeight="700">
+                <Text tag="p" class="cs-item-p" set:html={`Annulation client :<br />
+                  • ≥ J‑30 : acompte restitué ; <br />
+                  • J‑29 → J‑15 : 50 % dûs ; <br />
+                  • ≤ J‑14 : 100 % dûs.<br />
+                  Annulation entreprise : acompte remboursé + alternative proposée.`}></Text>
+              </Details>
+            </li>
+            <li class="cs-faq-item">
+              <Details class="cs-details" summary="Litiges & droit applicable" backgroundColor="#f7f7f7" padding="1rem 1.5rem" border={true} borderColor="#e0e0e0" borderWidth="1px" summaryFontSize="1.25rem" summaryFontWeight="700">
+                <Text tag="p" class="cs-item-p">
+                  Droit français. Tribunal d’Annecy compétent après tentative de médiation.
+                </Text>
+              </Details>
+            </li>
+            <li class="cs-faq-item">
+              <Details class="cs-details" summary="Mises à jour des CGV" backgroundColor="#f7f7f7" padding="1rem 1.5rem" border={true} borderColor="#e0e0e0" borderWidth="1px" summaryFontSize="1.25rem" summaryFontWeight="700">
+                <Text tag="p" class="cs-item-p">
+                  Version applicable : celle en ligne à la date de la réservation.
+                </Text>
+              </Details>
+            </li>
+            <li class="cs-faq-item">
+              <Details class="cs-details" summary="Contact" backgroundColor="#f7f7f7" padding="1rem 1.5rem" border={true} borderColor="#e0e0e0" borderWidth="1px" summaryFontSize="1.25rem" summaryFontWeight="700">
+                <Text tag="p" class="cs-item-p">
+                  Question ? Écrivez‑nous à <strong>{org?.email ?? 'contact@votre-entreprise.com'}</strong> ou à <strong>{fullAddress || defaultAddress}</strong>.
+                </Text>
+              </Details>
+            </li>
+          </List>
+        </Section>
+      </Section>
+    </Wrapper2>
+  </Section>
+</Layout>
+
+<style is:inline>
+    @media only screen and (min-width: 0rem) {
+        .cs-item-p {
+            background-color: transparent !important;
+            line-height: 1.5em;
+        }
+        #legal-1720 a.cs-option {
+            border: solid 1px black !important;
+            box-shadow: none;
+            margin-bottom: 15px !important;
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            gap: .5rem;
+            text-decoration: none;
+            color: var(--bodyTextColor);
+            background-color: #f7f7f7;
+            transition: color .3s, background-color .3s;
+        }
+        #legal-1720 {
+            padding: var(--sectionPadding);
+            position: relative;
+            margin-bottom: 28px;
+            padding-top: 30px;
+        }
+        #legal-1720 .cs-flex-group {
+            width: 100%;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            gap: clamp(1rem, 2.3vw, 1.25rem);
+            position: relative;
+        }
+        #legal-1720 .cs-wrapper {
+            width: 100%;
+            position: relative;
+        }
+        #legal-1720 .cs-button-group {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: clamp(1rem, 2.5vw, 1.25rem);
+            flex: none;
+        }
+        #legal-1720 .cs-flex {
+            width: 100%;
+            padding: clamp(1.5rem, 3vw, 2rem);
+            background-color: #f7f7f7;
+            display: flex;
+            flex-direction: column;
+            order: 3;
+            gap: 1.25rem;
+        }
+        #legal-1720 a.cs-option {
+            font-size: clamp(1rem, 2vw, 1.25rem);
+            line-height: 1.2em;
+            font-weight: 700;
+            justify-content: flex-start;
+            position: relative;
+            z-index: 1;
+        }
+        #legal-1720 a.cs-option:hover {
+            color: var(--primary);
+            cursor: pointer;
+        }
+        #legal-1720 a.cs-option.cs-active {
+            color: var(--primary);
+            background-color: #e8e8e8;
+        }
+        #legal-1720 .cs-picture {
+            width: 100%;
+            height: clamp(20.5rem, 30vw, 28.125rem);
+            margin: 0 0 clamp(1rem, 2.4vw, 1.25rem);
+            order: 2;
+            position: relative;
+            z-index: 1;
+        }
+        #legal-1720 .cs-picture img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        #legal-1720 .cs-faq-group {
+            width: 100%;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: .5rem;
+            transition: transform .7s, opacity .3s, visibility .5s, top .3s, left .3s;
+            transform-origin: top;
+        }
+        #legal-1720 .cs-faq-group.cs-hidden {
+            visibility: hidden;
+            pointer-events: none;
+            opacity: 0;
+            top: 0;
+            left: 0;
+            height: 0;
+            position: absolute;
+            transform: scaleY(0);
+        }
+        #legal-1720 .cs-faq-item {
+            list-style: none;
+            width: 100%;
+        }
+        #legal-1720 .cs-details {
+            width: 100%;
+        }
+        #legal-1720 .cs-details summary {
+            font-size: clamp(1rem, 2vw, 1.25rem);
+            line-height: 1.2em;
+            text-align: left;
+            font-weight: 700;
+            padding: clamp(1rem, 2vw, 1.5rem);
+            background-color: #f7f7f7;
+            color: var(--headerColor);
+            display: block;
+            width: 100%;
+            position: relative;
+            transition: background-color .3s, color .3s;
+            cursor: pointer;
+            list-style: none;
+        }
+        #legal-1720 .cs-details summary::-webkit-details-marker {
+            display: none;
+        }
+        #legal-1720 .cs-details summary:hover {
+            color: var(--primary);
+        }
+        #legal-1720 .cs-details summary:before,
+        #legal-1720 .cs-details summary:after {
+            content: "";
+            width: .75rem;
+            height: .125rem;
+            background-color: var(--headerColor);
+            opacity: 1;
+            border-radius: 2px;
+            position: absolute;
+            top: 50%;
+            right: 1.5rem;
+            transform-origin: center;
+            transition: transform .5s, background-color .3s;
+        }
+        #legal-1720 .cs-details summary:before {
+            transform: translateY(-50%) rotate(0deg);
+        }
+        #legal-1720 .cs-details summary:after {
+            transform: translateY(-50%) rotate(90deg);
+        }
+        #legal-1720 .cs-details[open] > summary {
+            color: var(--primary);
+        }
+        #legal-1720 .cs-details[open] > summary:before,
+        #legal-1720 .cs-details[open] > summary:after {
+            background-color: var(--primary);
+        }
+        #legal-1720 .cs-details[open] > summary:before {
+            transform: translateY(-50%) rotate(45deg);
+        }
+        #legal-1720 .cs-details[open] > summary:after {
+            transform: translateY(-50%) rotate(-45deg);
+        }
+        #legal-1720 .cs-item-p {
+            width: 100%;
+            margin: 0;
+            padding: 1rem 1.5rem;
+            background-color: #f7f7f7;
+            color: var(--bodyTextColor);
+            border-top: 1px solid #e0e0e0;
+        }
+    }
+    @media only screen and (min-width: 37.5rem) {
+        #legal-1720 .cs-button-group {
+            align-items: stretch;
+            flex: none;
+        }
+        #legal-1720 .cs-picture {
+            min-height: clamp(18.75rem, 30vw, 30.8125rem);
+            margin: 0;
+            height: 100%;
+            flex: none;
+            order: 3;
+        }
+    }
+    @media only screen and (min-width: 48rem) {
+        #legal-1720 .cs-flex-group {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: nowrap;
+            column-gap: clamp(1.25rem, 3vw, 5rem);
+        }
+        #legal-1720 .cs-button-group {
+            width: 80%;
+            max-width: 22.0625rem;
+            flex-direction: column;
+            flex: auto;
+        }
+        #legal-1720 .cs-picture {
+            max-height: 31.25rem;
+        }
+    }
+</style>
+
+<script is:inline>
+    document.addEventListener('DOMContentLoaded', () => {
+        const filterLinks = document.querySelectorAll('#legal-1720 .cs-option');
+        const contentSections = document.querySelectorAll('#legal-1720 .cs-faq-group');
+        const activeClass = 'cs-active';
+        const hiddenClass = 'cs-hidden';
+
+        function activateTab(targetId) {
+            if (!targetId || !targetId.startsWith('#')) return;
+            const targetElement = document.querySelector(targetId);
+            if (!targetElement) return;
+
+            filterLinks.forEach(link => {
+                link.classList.toggle(activeClass, link.getAttribute('href') === targetId);
+            });
+
+            contentSections.forEach(section => {
+                section.classList.toggle(hiddenClass, section.id !== targetId.substring(1));
+            });
+        }
+
+        filterLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetId = link.getAttribute('href');
+                if (window.history.pushState) {
+                    window.history.pushState(null, null, targetId);
+                } else {
+                    window.location.hash = targetId;
+                }
+                activateTab(targetId);
+            });
+        });
+
+        window.addEventListener('popstate', () => {
+            const targetId = window.location.hash || (filterLinks.length > 0 ? filterLinks[0].getAttribute('href') : '');
+            activateTab(targetId);
+        });
+
+        const initialTargetId = window.location.hash || (filterLinks.length > 0 ? filterLinks[0].getAttribute('href') : '');
+        activateTab(initialTargetId);
+    });
+</script>

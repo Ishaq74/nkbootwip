@@ -1,5 +1,4 @@
 ---
-import { getCollection } from "astro:content";
 import Section from "@atoms/Section.astro";
 import Wrapper from "@atoms/Wrapper2.astro";
 import Text from "@atoms/Text.astro";
@@ -8,67 +7,94 @@ import NavItem from "@components/navigations/NavItem.astro";
 import Input from "@atoms/Input.astro";
 import Button from "@atoms/Button.astro";
 import Link from "@atoms/Link.astro";
+import { Image } from "astro:assets";
 
-const org = (await getCollection("organizations")).find(entry => entry.slug === "nkboot");
-if (!org) throw new Error("Organisation nkboot non trouvée");
+const config = {
+  showBrand: true,
+  showNav: true,
+  showSocials: true,
+  showSearchBar: true,
+  showAuthButtons: true,
+};
 
-const data = org.data;
-const navLinks = data.navLinks || [];
-const logo = data.logo || "";
-const logoAlt = data.logoAlt || data.name;
-const slogan = data.slogan || "";
+// --- ON REÇOIT LA PROP 'org' DE MANIÈRE STANDARD ---
+const { org = {} } = Astro.props;
+
+const defaultNavLinks = [
+  { name: "Accueil", url: "/" },
+  { name: "Theme", url: "/theme" },
+  {
+    name: "Apropos",
+    url: "#",
+    dropdown: true,
+    children: [
+      { name: "L'entreprise", url: "/apropos/lentreprise" },
+      { name: "L'équipe", url: "/apropos/lequipe" },
+    ],
+  },
+  { name: "Contact", url: "/contact" },
+  { name: "Mentions Légales", url: "/mentions-legales" },
+];
+
+// --- ON UTILISE LA VARIABLE 'org' ---
+const navlinks = Array.isArray(org.navlinks) && org.navlinks.length > 0 ? org.navlinks : defaultNavLinks;
+const logo = typeof org.logo === "string" && org.logo.trim() !== "" ? org.logo : "";
+const logoalt = typeof org.alt_logo === "string" && org.alt_logo.trim() !== "" ? org.alt_logo : org.name || "Logo de l'entreprise";
 ---
 
-<Section
-  as="header"
-  backgroundColor="white"
-  textColor="dark"
-  borderBottom
->
-  <Wrapper
-    class="header-grid"
-    style="display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 2rem;"
-  >
-    <!-- BRAND -->
-    <div class="brand" style="display: flex; align-items: center; gap: 0.75rem;">
-      {logo && (
-        <Link href="/" aria-label="Accueil">
-          <img src={logo} alt={logoAlt} width="42" height="42" style="border-radius: 50%; object-fit: cover;" />
-        </Link>
-      )}
-      <Text tag="span" fontSize="1.25rem" fontWeight="bold">{data.name}</Text>
-    </div>
-
+<Section as="header" backgroundColor="white" textColor="dark" borderBottom>
+  <Wrapper class="header-grid" style="display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 2rem;">
+    {config.showBrand && (logo || org.name) && (
+      <div class="brand" style="display: flex; align-items: center; gap: 0.75rem;">
+        {logo && (
+          <Link href="/" aria-label="Accueil">
+            <Image class="logo" src={logo} alt={logoalt} width={42} height={42} />
+          </Link>
+        )}
+        {org.name && (
+          <Text tag="span" fontSize="1.25rem" fontWeight="bold">{org.name}</Text>
+        )}
+      </div>
+    )}
+    
     <!-- NAVIGATION -->
-    <nav class="main-nav" style="justify-self: center;">
-      <ul class="nav-list">
-        {navLinks.map(link => (
-          <NavItem {...link} mode="desktop" />
-        ))}
-      </ul>
-    </nav>
+    {config.showNav && navlinks.length > 0 && (
+      <nav class="main-nav" style="justify-self: center;">
+        <ul class="nav-list" role="menubar" aria-label="Main navigation">
+          {navlinks.map(link => (
+            <NavItem {...link} mode="desktop" />
+          ))}
+        </ul>
+      </nav>
+    )}
 
     <!-- ACTIONS -->
     <div class="header-actions" style="display: flex; align-items: center; gap: 1rem; justify-self: end;">
-      <form>
-        <Input type="search" placeholder="Search..." />
-      </form>
+      {config.showSearchBar && (
+        <form>
+          <Input type="search" placeholder="Search..." />
+        </form>
+      )}
 
-      <div class="social-icons">
-        <a href="#"><Icon name="mdi:facebook" size={20} /></a>
-        <a href="#"><Icon name="mdi:twitter" size={20} /></a>
-        <a href="#"><Icon name="mdi:linkedin" size={20} /></a>
-      </div>
+      {config.showSocials && (
+        <div class="social-icons">
+          <a href="#"><Icon name="mdi:facebook" size={20} /></a>
+          <a href="#"><Icon name="mdi:twitter" size={20} /></a>
+          <a href="#"><Icon name="mdi:linkedin" size={20} /></a>
+        </div>
+      )}
 
-      <div class="auth-buttons" style="display: flex; gap: 0.5rem;">
-        <Button variant="outline">Login</Button>
-        <Button variant="primary">Sign Up</Button>
-      </div>
+      {config.showAuthButtons && (
+        <div class="auth-buttons" style="display: flex; gap: 0.5rem;">
+          <Button variant="outline">Login</Button>
+          <Button variant="primary">Sign Up</Button>
+        </div>
+      )}
 
       <button
         class="nav-toggle"
         aria-label="Menu"
-        onclick="document.querySelector('.mobile-nav').classList.toggle('open')"
+        onclick={() => document.querySelector('.mobile-nav')?.classList.toggle('open')}
         style="background: none; border: none; cursor: pointer;"
       >
         <Icon name="mdi:menu" size={26} />
@@ -77,16 +103,24 @@ const slogan = data.slogan || "";
   </Wrapper>
 
   <!-- MOBILE NAV -->
-  <Wrapper class="mobile-nav" style="display: none; flex-direction: column; padding: 1rem 0;">
-    <ul style="list-style: none; padding: 0; margin: 0;">
-      {navLinks.map(link => (
-        <NavItem {...link} mode="mobile" />
-      ))}
-    </ul>
-  </Wrapper>
+  {config.showNav && navlinks.length > 0 && (
+    <Wrapper class="mobile-nav" style="display: none; flex-direction: column; padding: 1rem 0;">
+      <ul style="list-style: none; padding: 0; margin: 0;">
+        {navlinks.map(link => (
+          <NavItem {...link} mode="mobile" />
+        ))}
+      </ul>
+    </Wrapper>
+  )}
 </Section>
 
 <style is:inline>
+
+.logo {
+  width: 24px;
+  height: 24px;
+}
+
   .nav-list {
     display: flex;
     gap: 2rem;
