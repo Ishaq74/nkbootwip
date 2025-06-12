@@ -3,14 +3,56 @@ import Layout from "@layouts/BaseLayout.astro";
 import Section from "@atoms/Section.astro";
 import Wrapper2 from "@atoms/Wrapper2.astro";
 import Text from "@atoms/Text.astro";
+import QueryLoop from "@organisms/QueryLoop.astro";
 import List from "@atoms/List.astro";
 import { Image } from "astro:assets";
 import Details from "@atoms/Details.astro";
 
-
+const { allUsers, org } = Astro.locals;
 ---
 
 <Layout title="L'Équipe" description="L'Équipe du site.">
-Test
+<!-- Scénario 1: Afficher TOUS les utilisateurs, triés par nom -->
+    <section>
+      <Text tag="h2" class="text-2xl font-semibold mb-4">1. Tous les utilisateurs, triés par nom (A-Z)</Text>
+      <QueryLoop
+        cardType="users"
+        entries={allUsers}
+        columns={3}
+        sort={{ field: 'nom', order: 'asc' }}
+      />
+    </section>
 
+    <!-- Scénario 2: Afficher l'équipe de l'organisation principale ('nkboot' ou la première) -->
+    <section>
+      <Text tag="h2" class="text-2xl font-semibold mb-4">2. Équipe de l'organisation principale ({org.name})</Text>
+      <QueryLoop
+        cardType="users"
+        entries={allUsers}
+        columns={3}
+        filters={{ organization_id: org.id }}
+      />
+    </section>
+
+    <!-- Scénario 3: Afficher uniquement les utilisateurs avec le rôle 'admin' -->
+    <section>
+      <Text tag="h2" class="text-2xl font-semibold mb-4">3. Uniquement les administrateurs</Text>
+      <QueryLoop
+        cardType="users"
+        entries={allUsers}
+        columns={4}
+        filters={{ role: 'admin' }}
+      />
+    </section>
+
+    <!-- Scénario 4: Limiter le résultat aux 2 premiers utilisateurs -->
+    <section>
+      <Text tag="h2" class="text-2xl font-semibold mb-4">4. Les 2 premiers utilisateurs de la liste</Text>
+      <QueryLoop
+        cardType="users"
+        entries={allUsers}
+        columns={2}
+        limit={2}
+      />
+    </section>
 </Layout>

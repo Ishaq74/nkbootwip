@@ -5,49 +5,81 @@ import { defineMiddleware } from 'astro:middleware';
 
 export const onRequest = defineMiddleware(async (context, next) => {
   
-  // 1. Récupérer l'identité du site (on suppose qu'il n'y en a qu'une)
-  const siteidentityEntries = await getCollection('siteidentity');
-  const siteEntry = siteidentityEntries.length > 0 ? siteidentityEntries[0] : null;
+  // Fonction utilitaire sécurisée pour récupérer les collections
+  const getAndCleanCollection = async (collectionName) => {
+    try {
+      const entries = await getCollection(collectionName);
+      return entries.filter(entry => entry && entry.data);
+    } catch (e) {
+      console.error(`[Middleware] Collection "${collectionName}" introuvable ou erreur de lecture:`, e);
+      return [];
+    }
+  };
 
-  // Si aucune identité de site n'est trouvée, on initialise tout à null/vide
-  if (!siteEntry) {
+  // 1. CHARGEMENT DE TOUTES LES COLLECTIONS EN PARALLÈLE
+  const [
+    siteidentityEntries, 
+    organizationsEntries, 
+    usersEntries, 
+    postsEntries, 
+    postcategoriesEntries,
+    designsEntries
+  ] = await Promise.all([
+    getAndCleanCollection('siteidentity'),
+    getAndCleanCollection('organizations'),
+    getAndCleanCollection('users'),
+    getAndCleanCollection('posts'),
+    getAndCleanCollection('postcategories'),
+    getAndCleanCollection('design'),
+  ]);
+
+  // 2. DÉFINITION DU SITE ACTUEL
+  const siteEntry = siteidentityEntries.length > 0 ? siteidentityEntries[0] : null;
+  const siteId = siteEntry?.id;
+
+  // Si aucun site n'est trouvé, on arrête et on initialise des valeurs vides
+  if (!siteId) {
     context.locals.site = null;
     context.locals.org = {};
     context.locals.allOrgs = [];
     context.locals.design = null;
+    context.locals.allUsers = [];
+    context.locals.allPosts = [];
+    context.locals.allPostCategories = [];
     return next();
   }
 
-  // 2. Récupérer en parallèle toutes les organisations et tous les designs
-  const [allOrgsEntries, allDesignsEntries] = await Promise.all([
-    getCollection('organizations'),
-    getCollection('design')
-  ]);
+  // --- FILTRAGE COHÉRENT DE TOUTES LES DONNÉES PAR siteId ---
 
-  // 3. Filtrer et extraire les données des organisations liées à ce site
-  const allOrgsData = allOrgsEntries
-    .filter(entry => entry.data.data.siteidentity_id === siteEntry.id)
-    .map(entry => entry.data.data);
+  // 3. Organisations
+  const allOrgsFilteredEntries = organizationsEntries.filter(entry => entry.data.data.siteidentity_id === siteId);
+  const allOrgsData = allOrgsFilteredEntries.map(entry => entry.data.data);
+  let mainOrgData = allOrgsData.length > 0 ? (allOrgsData.find(o => o.name === 'nkboot') || allOrgsData[0]) : {};
 
-  // 4. Déterminer l'organisation principale
-  let mainOrgData = {};
-  if (allOrgsData.length > 0) {
-    // Essayer de trouver l'organisation nommée 'nkboot'
-    const specificOrg = allOrgsData.find(o => o.name === 'nkboot');
-    // Sinon, prendre la première de la liste comme fallback
-    mainOrgData = specificOrg || allOrgsData[0];
-  }
+  // 4. Utilisateurs
+  const allUsersFilteredEntries = usersEntries.filter(entry => entry.data.data.siteidentity_id === siteId);
 
-  // 5. Trouver le design lié à ce site
-  const designEntry = allDesignsEntries.find(entry => entry.data.data.siteidentity_id === siteEntry.id);
+  // 5. Articles (Posts) - On suppose un champ siteidentity_id dans les posts
+  const allPostsFilteredEntries = postsEntries.filter(entry => entry.data.siteidentity_id === siteId);
+
+  // 6. Catégories d'articles (PostCategories) - On suppose un champ siteidentity_id dans les catégories
+  const allPostCategoriesFilteredEntries = postcategoriesEntries.filter(entry => entry.data.siteidentity_id === siteId);
+
+  // 7. Design
+  const designEntry = designsEntries.find(entry => entry.data.data.siteidentity_id === siteId);
   const designData = designEntry ? designEntry.data.data : null;
 
-  // 6. Stocker toutes les données dans context.locals
+  // --- INJECTION DES DONNÉES DANS context.locals ---
+
   context.locals.site = siteEntry.data;
   context.locals.org = mainOrgData;
   context.locals.allOrgs = allOrgsData;
   context.locals.design = designData;
 
-  // 7. Passer au rendu de la page
+  // On passe les listes d'entrées complètes et FILTRÉES au QueryLoop
+  context.locals.allUsers = allUsersFilteredEntries;
+  context.locals.allPosts = allPostsFilteredEntries;
+  context.locals.allPostCategories = allPostCategoriesFilteredEntries;
+
   return next();
 });
